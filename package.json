@@ -1,0 +1,18 @@
+{
+  "name": "devassetspro-app",
+  "version": "1.0.0",
+  "description": "DevAssetsPro App é uma plataforma de gerenciamento de ativos que permite aos usuários armazenar informações sobre os ativos, incluindo categorias, comentários e likes. A plataforma ira oferecer recursos de categorização e marcação de ativos, permitindo ao user atribuir tags para facilitar a busca de ativos. ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Miguel Silva",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.0.1"
+  }
+}
