@@ -9,7 +9,7 @@ require('dotenv').config()
 app.use(express.json())
 
 app.use('/api/v1/assets', assets)
-app.use('/api/v1/', auth)
+app.use('/api/v1/auth', auth)
 
 app.get('/', (req, res) => {
   res.send('Dev Assets API -> Home page')
