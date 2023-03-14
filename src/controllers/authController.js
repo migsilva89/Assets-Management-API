@@ -11,7 +11,21 @@ const registerUser = async (req, res) => {
 }
 
 const loginUser = async (req, res) => {
-  res.send('ok')
+  const { email, password } = req.body
+  
+  // Check for user
+  const user = await User.findOne({ email }).select('+password')
+  
+  if (!user)
+    return res.status(400).send({ error: 'User not found!' })
+  
+  // Check if password matches
+  const isMatch = await user.matchPassword(password)
+  if (!isMatch)
+    return res.status(400).send({ error: 'Invalid Password' })
+  
+  
+  res.send({ user })
 }
 
 module.exports = {
