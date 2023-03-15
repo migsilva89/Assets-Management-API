@@ -1,5 +1,5 @@
 const express = require('express')
-
+const colors = require('colors')
 const assets = require('./routes/assetsRoutes')
 const auth = require('./routes/authRoutes')
 const connectDB = require('./database/connection')
@@ -19,15 +19,22 @@ app.get('/', (req, res) => {
   res.send('Dev Assets API -> Home page')
 })
 
-const start = async () => {
+const server = async () => {
   try {
     await connectDB(process.env.MONGO_URL)
     app.listen(process.env.PORT, () => {
-      console.log(`server is running on port ${process.env.PORT}`)
+      console.log(`server is running on port ${process.env.PORT}`.yellow.bold)
     })
   } catch (err) {
-    console.log(err)
+    console.log(err.red)
   }
 }
 
-start()
+server()
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (err, promise) => {
+  console.log(`Error: ${err.message}`.red)
+  // Close server & exit process
+  server.close(() => process.exit(1))
+})
