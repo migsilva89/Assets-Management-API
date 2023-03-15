@@ -4,4 +4,5 @@ module.exports = (req, res, next) => {
   //verificar se ha token
   if (!authHeader)
     return res.status(401).send({ error: 'No token provided' })
+  next()
 }

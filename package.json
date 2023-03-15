@@ -2,7 +2,7 @@
   "name": "devassetspro-app",
   "version": "1.0.0",
   "description": "DevAssetsPro App é uma plataforma de gerenciamento de ativos que permite aos usuários armazenar informações sobre os seus ativos.",
-  "main": "app.js",
+  "main": "src/app.js",
   "scripts": {
     "start": "nodemon src/app.js"
   },
@@ -15,6 +15,7 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.0.1",
+    "morgan": "^1.10.0",
     "nodemon": "^2.0.21"
   }
 }
