@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const slugify = require('slugify')
 const commentSchema = require('./Comment')
 
 const assetSchema = new mongoose.Schema({
@@ -26,6 +27,12 @@ const assetSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   }
+})
+
+// Generate slug before saving the asset
+assetSchema.pre('save', function(next){
+  this.slug = slugify(this.name, { lower: true })
+  next()
 })
 
 module.exports = assetSchema

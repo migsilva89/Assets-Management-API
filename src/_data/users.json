@@ -1,0 +1,37 @@
+[
+  {
+    "name": "John Doe",
+    "nickName": "johndoe",
+    "email": "johndoe@gmail.com",
+    "password": "123456",
+    "assets": []
+  },
+  {
+    "name": "Jane Smith",
+    "nickName": "janesmith",
+    "email": "janesmith@gmail.com",
+    "password": "123456",
+    "assets": []
+  },
+  {
+    "name": "Bob Johnson",
+    "nickName": "bobjohnson",
+    "email": "bobjohnson@gmail.com",
+    "password": "123456",
+    "assets": []
+  },
+  {
+    "name": "Sarah Lee",
+    "nickName": "sarahlee",
+    "email": "sarahlee@gmail.com",
+    "password": "123456",
+    "assets": []
+  },
+  {
+    "name": "Tom Williams",
+    "nickName": "tomwilliams",
+    "email": "tomwilliams@gmail.com",
+    "password": "123456",
+    "assets": []
+  }
+]
