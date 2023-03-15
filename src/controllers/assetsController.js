@@ -5,9 +5,13 @@ const Asset = require('../models/Asset')
  * @route GET /api/v1/login
  * @access Private
  */
-const getAllAssets = (req, res) => {
-  console.log('oi')
-  res.send('all assets')
+const getAllAssets = async (req, res) => {
+  try {
+    const assets = await Asset.find({})
+    res.status(400).json(assets)
+  } catch (error) {
+    res.status(400).json({ success: false, error: error.message })
+  }
 }
 
 /**

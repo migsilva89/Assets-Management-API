@@ -1,10 +1,12 @@
 const mongoose = require('mongoose')
 const commentSchema = require('./Comment')
+const slugify = require('slugify')
 
 const AssetSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
+    unique: true,
     trim: true,
     maxlength: [50, 'Name can not be more than 50 characters']
   },
@@ -28,6 +30,9 @@ const AssetSchema = new mongoose.Schema({
   }
 })
 
-const Asset = mongoose.model('Asset', AssetSchema)
+AssetSchema.pre('save', function(next){
+  this.slug = slugify(this.name, { lower: true })
+  next()
+})
 
-module.exports = Asset
+module.exports = mongoose.model('Asset', AssetSchema)
