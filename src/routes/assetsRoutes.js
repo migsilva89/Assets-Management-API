@@ -1,9 +1,8 @@
 const express = require('express')
 const router = express.Router()
+const { getAllAssets, addAsset } = require('../controllers/assetsController')
 
-//importar os nosso controllers
-const { getAllAssets } = require('../controllers/assetsController')
-
-router.route('/').get(getAllAssets)
+router.get('/', getAllAssets)
+router.post('/', addAsset)
 
 module.exports = router
