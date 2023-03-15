@@ -4,8 +4,9 @@ const jwt = require('jsonwebtoken')
 /**
  * @desc Registers a new user and returns the created user object.
  * @param {object} req - The HTTP request object.
- * @param res
+ * @param {object} res - The HTTP response object.
  * @returns {Promise<object>} The created user object.
+ * @route POST /api/v1/register
  */
 const registerUser = async (req, res) => {
   const { name, email, password, nickName } = req.body
@@ -25,6 +26,7 @@ const registerUser = async (req, res) => {
  * @param {object} req - The HTTP request object.
  * @param {object} res - The HTTP response object.
  * @returns {Promise<object>} The authenticated user object and JWT token.
+ * @route POST /api/v1/login
  */
 const loginUser = async (req, res) => {
   const { email, password } = req.body

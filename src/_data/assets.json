@@ -1,15 +1,9 @@
 {
-  "name": "Asset 1",
-  "description": "This is the first asset",
-  "image": "asset1.jpg",
-  "owner": "<ID do usuário aqui>",
+  "name": "Novo Ativo",
+  "description": "Descrição do novo ativo",
   "tags": [
     "tag1",
-    "tag2"
-  ],
-  "likes": [],
-  "comments": [],
-  "createdAt": "<Data de criação aqui>",
-  "slug": "asset-1",
-  "isPublic": true
+    "tag2",
+    "tag3"
+  ]
 }

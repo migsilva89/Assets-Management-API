@@ -1,17 +1,28 @@
+const Asset = require('../models/Asset')
+
+/**
+ * @desc Get all assets
+ * @route GET /api/v1/login
+ * @access Private
+ */
 const getAllAssets = (req, res) => {
   console.log('oi')
   res.send('all assets')
 }
 
 /**
- *
- * @param req
- * @param res
+ * @desc Add one asset
+ * @route POST /api/v1/login
+ * @access Private
  */
-const addAsset = (req, res) => {
-  res.send('add asset')
+const addAsset = async (req, res) => {
+  try {
+    const asset = await Asset.create(req.body)
+    res.status(201).json(asset)
+  } catch (error) {
+    res.status(400).json({ success: false, error: error.message })
+  }
 }
-
 
 module.exports = {
   getAllAssets,

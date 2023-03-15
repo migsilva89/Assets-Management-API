@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const assetSchema = require('./Asset')
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -28,7 +27,7 @@ const UserSchema = new mongoose.Schema({
     minlength: 6,
     select: false
   },
-  assets: [assetSchema],
+  assets: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Asset' }],
   resetPasswordToken: String,
   resetPasswordExpire: Date,
   createdAt: {
