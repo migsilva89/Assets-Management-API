@@ -27,7 +27,7 @@ const UserSchema = new mongoose.Schema({
     minlength: 6,
     select: false
   },
-  assets: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Asset' }],
+  // assets: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Asset' }],
   resetPasswordToken: String,
   resetPasswordExpire: Date,
   createdAt: {
