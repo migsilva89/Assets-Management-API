@@ -1,4 +1,5 @@
 const Asset = require('../models/Asset')
+const User = require('../models/User')
 
 /**
  * @desc Get all assets
@@ -35,8 +36,13 @@ const getAsset = async (req, res) => {
  */
 const addAsset = async (req, res, next) => {
   try {
+    const user = await User.findById(req.body.owner)
+    if (!user) {
+      return res.status(400).json({ success: false, error: 'no user found' })
+    }
     const asset = await Asset.create(req.body)
     res.status(201).json(asset)
+    
   } catch (error) {
     res.status(400).json({ success: false, error: error.message })
     // next(error)

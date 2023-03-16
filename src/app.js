@@ -14,7 +14,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use(express.json())
-app.use(errorHandler)
+// app.use(errorHandler)
 app.use('/api/v1/auth', auth)
 app.use('/api/v1/assets', assets)
 app.get('/', (req, res) => {

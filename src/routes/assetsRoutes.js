@@ -1,6 +1,10 @@
 const express = require('express')
 const router = express.Router()
 const { getAllAssets, addAsset, deleteAsset, getAsset, updateAsset } = require('../controllers/assetsController')
+const auth = require('../middlewares/auth')
+
+router.use(auth) // Protege todas as rotas abaixo deste middleware
+
 
 router.get('/', getAllAssets)
 router.get('/:id', getAsset)

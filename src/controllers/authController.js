@@ -2,7 +2,18 @@ const User = require('../models/User')
 const jwt = require('jsonwebtoken')
 
 /**
- * @desc Registers a new user and returns the created user object.
+ * @desc Generate token
+ * @param params (user.id)
+ * @returns User Token
+ */
+function generateToken(params){
+  return jwt.sign({ id: params }, process.env.JWT_ACCESS_TOKEN, {
+    expiresIn: 60 * 60 * 24 * 2
+  })
+}
+
+/**
+ * @desc Registers a new user and returns the created user object and a token.
  * @param {object} req - The HTTP request object.
  * @param {object} res - The HTTP response object.
  * @returns {Promise<object>} The created user object.
@@ -13,7 +24,10 @@ const registerUser = async (req, res) => {
   
   try {
     const user = await User.create({ name, email, password, nickName })
-    return res.send({ user })
+    return res.send({
+      user,
+      token: generateToken(user.id)
+    })
     
   } catch (err) {
     return res.status(400).send({ error: 'Registration failed!' })
@@ -42,11 +56,10 @@ const loginUser = async (req, res) => {
   if (!isMatch)
     return res.status(400).send({ error: 'Invalid Password' })
   
-  const token = jwt.sign({ id: user.id }, process.env.JWT_ACCESS_TOKEN, {
-    expiresIn: process.env.EXPIRES_IN
+  res.send({
+    user,
+    token: generateToken(user.id)
   })
-  
-  res.send({ user, token })
 }
 
 module.exports = {
