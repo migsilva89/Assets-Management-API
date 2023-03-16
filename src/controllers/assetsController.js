@@ -20,7 +20,12 @@ const getAllAssets = async (req, res) => {
  * @access Private
  */
 const getAsset = async (req, res) => {
-  res.send('get one')
+  try {
+    const asset = await Asset.findById(req.params.id)
+    res.status(201).json({success:true, asset})
+  } catch (error) {
+    res.status(400).json({ success: false, error: error.message })
+  }
 }
 
 /**
@@ -54,7 +59,12 @@ const updateAsset = async (req, res) => {
  * @access Private
  */
 const deleteAsset = async (req, res) => {
-  res.send(req.params)
+  try {
+    const asset = await Asset.findByIdAndDelete(req.params.id)
+    res.status(201).json({success:true, asset})
+  } catch (error) {
+    res.status(400).json({ success: false, error: error.message })
+  }
 }
 
 module.exports = {
