@@ -22,7 +22,7 @@ const getAllAssets = async (req, res) => {
 const getAsset = async (req, res) => {
   try {
     const asset = await Asset.findById(req.params.id)
-    res.status(201).json({success:true, asset})
+    res.status(201).json({ success: true, asset })
   } catch (error) {
     res.status(400).json({ success: false, error: error.message })
   }
@@ -49,7 +49,15 @@ const addAsset = async (req, res, next) => {
  * @access Private
  */
 const updateAsset = async (req, res) => {
-  res.send(req.body)
+  try {
+    const asset = await Asset.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true
+    })
+    res.status(200).json({ success: true, data: asset })
+  } catch (error) {
+    res.status(400).json({ success: false, error: error.message })
+  }
 }
 
 /**
@@ -61,7 +69,7 @@ const updateAsset = async (req, res) => {
 const deleteAsset = async (req, res) => {
   try {
     const asset = await Asset.findByIdAndDelete(req.params.id)
-    res.status(201).json({success:true, asset})
+    res.status(201).json({ success: true, asset })
   } catch (error) {
     res.status(400).json({ success: false, error: error.message })
   }
