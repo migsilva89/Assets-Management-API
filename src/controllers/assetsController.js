@@ -8,7 +8,7 @@ const Asset = require('../models/Asset')
 const getAllAssets = async (req, res) => {
   try {
     const assets = await Asset.find({})
-    res.status(400).json(assets)
+    res.status(200).json(assets)
   } catch (error) {
     res.status(400).json({ success: false, error: error.message })
   }
@@ -28,12 +28,13 @@ const getAsset = async (req, res) => {
  * @route POST /api/v1/assets
  * @access Private
  */
-const addAsset = async (req, res) => {
+const addAsset = async (req, res, next) => {
   try {
     const asset = await Asset.create(req.body)
     res.status(201).json(asset)
   } catch (error) {
     res.status(400).json({ success: false, error: error.message })
+    // next(error)
   }
 }
 
@@ -43,7 +44,7 @@ const addAsset = async (req, res) => {
  * @access Private
  */
 const updateAsset = async (req, res) => {
-  res.send('update')
+  res.send(req.body)
 }
 
 /**
@@ -53,10 +54,8 @@ const updateAsset = async (req, res) => {
  * @access Private
  */
 const deleteAsset = async (req, res) => {
-  console.log(req.params)
   res.send(req.params)
 }
-
 
 module.exports = {
   getAllAssets,
