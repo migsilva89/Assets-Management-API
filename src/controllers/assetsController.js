@@ -2,7 +2,7 @@ const Asset = require('../models/Asset')
 
 /**
  * @desc Get all assets
- * @route GET /api/v1/login
+ * @route GET /api/v1/assets
  * @access Private
  */
 const getAllAssets = async (req, res) => {
@@ -15,8 +15,17 @@ const getAllAssets = async (req, res) => {
 }
 
 /**
+ * @desc Get single asset
+ * @route Get /api/v1/assets/:id
+ * @access Private
+ */
+const getAsset = async (req, res) => {
+  res.send('get one')
+}
+
+/**
  * @desc Add one asset
- * @route POST /api/v1/login
+ * @route POST /api/v1/assets
  * @access Private
  */
 const addAsset = async (req, res) => {
@@ -28,7 +37,31 @@ const addAsset = async (req, res) => {
   }
 }
 
+/**
+ * @desc Update asset
+ * @route POST /api/v1/assets:id
+ * @access Private
+ */
+const updateAsset = async (req, res) => {
+  res.send('update')
+}
+
+/**
+ *
+ * @desc Delete one asset
+ * @route POST /api/v1/assets/:id
+ * @access Private
+ */
+const deleteAsset = async (req, res) => {
+  console.log(req.params)
+  res.send(req.params)
+}
+
+
 module.exports = {
   getAllAssets,
-  addAsset
+  addAsset,
+  deleteAsset,
+  getAsset,
+  updateAsset
 }
