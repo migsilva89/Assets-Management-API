@@ -36,11 +36,13 @@ const getAsset = async (req, res) => {
  */
 const addAsset = async (req, res, next) => {
   try {
-    const user = await User.findById(req.body.owner)
-    if (!user) {
+    const owner = req.user._id
+    if (!owner) {
       return res.status(400).json({ success: false, error: 'no user found' })
     }
-    const asset = await Asset.create(req.body)
+    
+    const { name, description, tags } = req.body
+    const asset = await Asset.create({ name, description, owner, tags })
     res.status(201).json(asset)
     
   } catch (error) {

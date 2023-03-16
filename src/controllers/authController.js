@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken')
  */
 function generateToken(params){
   return jwt.sign({ id: params }, process.env.JWT_ACCESS_TOKEN, {
-    expiresIn: 60 * 60 * 24 * 2
+    expiresIn: 60
   })
 }
 
@@ -31,7 +31,6 @@ const registerUser = async (req, res) => {
     
   } catch (err) {
     return res.status(400).send({ error: 'Registration failed!' })
-    
   }
 }
 
