@@ -1,5 +1,4 @@
 const Asset = require('../models/Asset')
-const User = require('../models/User')
 
 /**
  * @desc Get all assets
@@ -83,10 +82,51 @@ const deleteAsset = async (req, res) => {
   }
 }
 
+/**
+ * @desc Add comment to asset
+ * @route POST /api/v1/assets/:id/comments
+ * @access Private
+ */
+const addComment = async (req, res) => {
+  try {
+    const asset = await Asset.findById(req.params.id)
+    if (!asset) {
+      return res.status(404).json({ success: false, error: 'Asset not found' })
+    }
+    
+    const { text } = req.body
+    const author = req.user._id
+    const assetId = { text, author }
+    const newComment = {
+      text: req.body.text,
+      author: req.user._id,
+      asset: req.params.id
+    }
+    
+    asset.comments.unshift(newComment)
+    await asset.save()
+    res.status(201).json({ success: true, data: asset })
+    
+  } catch (error) {
+    res.status(400).json({ success: false, error: error.message })
+  }
+}
+
+/**
+ * @desc Add like to asset
+ * @route POST /api/v1/assets/:id/likes
+ * @access Private
+ */
+const addLike = async (req, res) => {
+  res.send('addLike')
+}
+
 module.exports = {
   getAllAssets,
   addAsset,
   deleteAsset,
   getAsset,
-  updateAsset
+  updateAsset,
+  addComment,
+  addLike
 }
