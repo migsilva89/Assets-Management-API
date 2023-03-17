@@ -4,6 +4,7 @@ const assets = require('./routes/assetsRoutes')
 const auth = require('./routes/authRoutes')
 const connectDB = require('./database/connection')
 const morgan = require('morgan')
+const cors = require('cors')
 const errorHandler = require('./middlewares/errorHandler')
 require('dotenv').config()
 const app = express()
@@ -14,6 +15,8 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use(express.json())
+app.use(cors())
+
 // app.use(errorHandler)
 app.use('/api/v1/auth', auth)
 app.use('/api/v1/assets', assets)
