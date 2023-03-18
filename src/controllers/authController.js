@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken')
  */
 function generateToken(params){
   return jwt.sign({ id: params }, process.env.JWT_ACCESS_TOKEN, {
-    expiresIn: 60
+    expiresIn: '1h'
   })
 }
 
