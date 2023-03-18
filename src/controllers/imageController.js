@@ -1,4 +1,5 @@
 const User = require('../models/User')
+const fs = require('fs')
 
 /**
  * @desc Atualiza o avatar do usuário autenticado.
@@ -8,8 +9,6 @@ const User = require('../models/User')
  * @route GET /api/v1/user/avatar
  */
 const updateAvatar = async (req, res) => {
-  // res.send(req.file.filename)
-  // console.log(req.user.id)
   try {
     const user = await User.findById(req.user.id)
     
@@ -17,18 +16,31 @@ const updateAvatar = async (req, res) => {
       return res.status(404).json({ msg: 'Usuário não encontrado' })
     }
     
-    if (req.file) {
-      user.avatar = req.file.filename
+    // Verifica se o avatar atual é diferente de "no-photo.jpg"
+    if (user.avatar !== 'no-photo.jpg') {
+      const filePath = `images/usersAvatar/${user.avatar}`
+      
+      // Verifica se o arquivo existe antes de excluí-lo
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath)
+      }
     }
     
-    await User.findByIdAndUpdate(req.user.id, user)
+    // Atualiza o avatar do usuário
+    const { filename } = req.file
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: req.user.id },
+      { avatar: filename },
+      { new: true }
+    )
     
-    res.json(user)
+    res.json(updatedUser)
   } catch (err) {
     console.error(err.message)
     res.status(500).send('Erro do servidor')
   }
 }
+
 
 // Exclui o avatar do usuário autenticado
 const deleteAvatar = async (req, res) => {
@@ -39,11 +51,14 @@ const deleteAvatar = async (req, res) => {
       return res.status(404).json({ msg: 'Usuário não encontrado' })
     }
     
-    // Define o avatar como "no-photo.jpg"
+    // apaga o avatar anterior, se existir
+    if (user.avatar) {
+      fs.unlinkSync(`images/usersAvatar/${user.avatar}`)
+    }
+    
     user.avatar = 'no-photo.jpg'
     
-    // Atualiza o documento do usuário na coleção
-    await User.findByIdAndUpdate(req.user.id, { $set: { avatar: user.avatar } })
+    await User.findByIdAndUpdate(req.user.id, user)
     
     res.json({ msg: 'Avatar excluído com sucesso' })
   } catch (err) {
@@ -51,5 +66,6 @@ const deleteAvatar = async (req, res) => {
     res.status(500).send('Erro do servidor')
   }
 }
+
 
 module.exports = { updateAvatar, deleteAvatar }
