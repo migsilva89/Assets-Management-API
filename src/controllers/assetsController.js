@@ -113,6 +113,41 @@ const addComment = async (req, res) => {
 }
 
 /**
+ * @desc Remove comment from an asset
+ * @route DELETE /api/v1/assets/:id/comments/:commentId
+ * @access Private
+ */
+const removeComment = async (req, res) => {
+  try {
+    const asset = await Asset.findById(req.params.id)
+    if (!asset) {
+      return res.status(404).json({ success: false, error: 'Asset not found' })
+    }
+    
+    const commentId = req.params.commentId
+    const comment = asset.comments.find(comment => comment._id.toString() === commentId.toString())
+    
+    if (!comment) {
+      return res.status(404).json({ success: false, error: 'Comment not found' })
+    }
+    
+    if (comment.author.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ success: false, error: 'Not authorized to delete this comment' })
+    }
+    
+    const removeIndex = asset.comments.findIndex(comment => comment._id.toString() === commentId.toString())
+    asset.comments.splice(removeIndex, 1)
+    await asset.save()
+    
+    res.status(200).json({ success: true, data: asset })
+    
+  } catch (error) {
+    res.status(400).json({ success: false, error: error.message })
+  }
+}
+
+
+/**
  * @desc Add like to asset
  * @route POST /api/v1/assets/:id/likes
  * @access Private
@@ -128,5 +163,6 @@ module.exports = {
   getAsset,
   updateAsset,
   addComment,
-  addLike
+  addLike,
+  removeComment
 }

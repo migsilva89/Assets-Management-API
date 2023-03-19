@@ -7,7 +7,8 @@ const {
   getAsset,
   updateAsset,
   addComment,
-  addLike
+  addLike,
+  removeComment
 } = require('../controllers/assetsController')
 const auth = require('../middlewares/auth')
 
@@ -18,7 +19,10 @@ router.get('/:id', getAsset)
 router.post('/', addAsset)
 router.put('/:id', updateAsset)
 router.delete('/:id', deleteAsset)
+
 router.post('/:id/comments', addComment)
+router.delete('/:id/comments/:commentId', removeComment)
+
 router.post('/:id/likes', addLike)
 
 module.exports = router
