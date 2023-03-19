@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
  * @desc Generate token
  * @param params (user.id)
  * @returns User Token
+ * PUBLIC
  */
 function generateToken(params){
   return jwt.sign({ id: params }, process.env.JWT_ACCESS_TOKEN, {
@@ -18,6 +19,7 @@ function generateToken(params){
  * @param {object} res - The HTTP response object.
  * @returns {Promise<object>} The created user object.
  * @route POST /api/v1/register
+ * PUBLIC
  */
 const registerUser = async (req, res) => {
   const { name, email, password, nickName } = req.body

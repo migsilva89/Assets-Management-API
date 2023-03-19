@@ -146,15 +146,61 @@ const removeComment = async (req, res) => {
   }
 }
 
-
 /**
  * @desc Add like to asset
  * @route POST /api/v1/assets/:id/likes
  * @access Private
  */
 const addLike = async (req, res) => {
-  res.send('addLike')
+  try {
+    const asset = await Asset.findById(req.params.id)
+    if (!asset) {
+      return res.status(404).json({ success: false, error: 'Asset not found' })
+    }
+    
+    const userId = req.user._id
+    if (asset.likes.includes(userId)) {
+      return res.status(400).json({ success: false, error: 'User has already liked this asset' })
+    }
+    
+    asset.likes.push(userId)
+    await asset.save()
+    res.status(200).json({ success: true, data: asset })
+    
+  } catch (error) {
+    res.status(400).json({ success: false, error: error.message })
+  }
 }
+
+/**
+ * @desc Remove like from asset
+ * @route DELETE /api/v1/assets/:id/likes
+ * @access Private
+ */
+const removeLike = async (req, res) => {
+  try {
+    const assetId = req.params.id
+    const asset = await Asset.findById(assetId)
+    
+    if (!asset) {
+      return res.status(404).send('Asset not found')
+    }
+    
+    const likeIndex = asset.likes.indexOf(req.user.id)
+    if (likeIndex === -1) {
+      return res.status(400).send('You have not liked this asset')
+    }
+    
+    asset.likes.splice(likeIndex, 1)
+    await asset.save()
+    
+    res.status(200).send('Like removed successfully')
+  } catch (error) {
+    console.error(error)
+    res.status(500).send('Server error')
+  }
+}
+
 
 module.exports = {
   getAllAssets,
@@ -163,6 +209,7 @@ module.exports = {
   getAsset,
   updateAsset,
   addComment,
+  removeComment,
   addLike,
-  removeComment
+  removeLike
 }

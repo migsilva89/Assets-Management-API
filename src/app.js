@@ -21,7 +21,7 @@ app.use(cors())
 
 // app.use(errorHandler)
 app.use('/api/v1/user', user)
-app.use('/api/v1/auth', auth)
+app.use('/api/v1/auth', auth) // Private routes below:
 app.use('/api/v1/assets', assets)
 
 
