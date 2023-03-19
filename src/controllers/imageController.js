@@ -1,6 +1,8 @@
 const User = require('../models/User')
 const fs = require('fs')
 
+//TODO url para aceder a imagem no FE: http://localhost:5000/images/my-image.jpg"
+
 /**
  * @desc Atualiza o avatar do usuário autenticado.
  * @param {object} req - The HTTP request object.
