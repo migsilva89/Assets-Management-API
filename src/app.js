@@ -1,4 +1,5 @@
 const express = require('express')
+const http = require('http')
 const colors = require('colors')
 const assets = require('./routes/assetsRoutes')
 const auth = require('./routes/authRoutes')
@@ -8,7 +9,11 @@ const morgan = require('morgan')
 const cors = require('cors')
 const errorHandler = require('./middlewares/errorHandler')
 require('dotenv').config()
+const { Server } = require('socket.io')
+
+
 const app = express()
+const server = http.createServer(app)
 
 // Dev logging middleware
 if (process.env.NODE_ENV === 'development') {
@@ -24,23 +29,39 @@ app.use('/api/v1/user', user)
 app.use('/api/v1/auth', auth) // Private routes below:
 app.use('/api/v1/assets', assets)
 
-
 app.get('/', (req, res) => {
   res.send('Dev Assets API -> Home page')
 })
 
-const server = async () => {
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['my-custom-header'],
+    credentials: true
+  }
+})
+
+//python3 -m http.server
+io.on('connection', (socket) => {
+  console.log('a user connected: ', socket.id)
+  
+  socket.on('send_message', (data) => {
+    socket.broadcast.emit('receive_message', data)
+  })
+  // socket.on('disconnect', () => {
+  //   console.log('user disconnected')
+  // })
+})
+
+server.listen(process.env.PORT, async () => {
   try {
     await connectDB(process.env.MONGO_URL)
-    app.listen(process.env.PORT, () => {
-      console.log(`server is running on port ${process.env.PORT}`.yellow.bold)
-    })
+    console.log(`server is running on port ${process.env.PORT}`.yellow.bold)
   } catch (err) {
     console.log(err.red)
   }
-}
-
-server()
+})
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err, promise) => {

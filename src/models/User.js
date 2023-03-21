@@ -31,6 +31,12 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: 'no-photo.jpg'
   },
+  followers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    }
+  ],
   resetPasswordToken: String,
   resetPasswordExpire: Date,
   createdAt: {
