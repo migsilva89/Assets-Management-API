@@ -2,6 +2,13 @@ const User = require('../models/User')
 const jwt = require('jsonwebtoken')
 
 /**
+ * @swagger
+ * tags:
+ *   name: Authentication
+ *   description: API endpoints for managing authentication.
+ */
+
+/**
  * @desc Generate token
  * @param params (user.id)
  * @returns User Token
@@ -14,12 +21,56 @@ function generateToken(params){
 }
 
 /**
- * @desc Registers a new user and returns the created user object and a token.
- * @param {object} req - The HTTP request object.
- * @param {object} res - The HTTP response object.
- * @returns {Promise<object>} The created user object.
- * @route POST /api/v1/register
- * PUBLIC
+ * @swagger
+ *
+ * /api/v1/register:
+ *   post:
+ *     summary: Registers a new user and returns the created user object and a token.
+ *     description: Registers a new user and returns the created user object and a token for authentication.
+ *     tags:
+ *       - Authentication
+ *     requestBody:
+ *       description: User information to be registered.
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: The name of the user.
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: The email address of the user.
+ *               password:
+ *                 type: string
+ *                 description: The password of the user.
+ *               nickName:
+ *                 type: string
+ *                 description: The nickname of the user.
+ *             required:
+ *               - name
+ *               - email
+ *               - password
+ *     responses:
+ *       '200':
+ *         description: OK. Returns the created user object and a token for authentication.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *                 token:
+ *                   type: string
+ *                   description: An authentication token for the user.
+ *       '400':
+ *         $ref: '#/components/responses/BadRequestError'
+ *       '500':
+ *         $ref: '#/components/responses/InternalServerError'
  */
 const registerUser = async (req, res) => {
   const { name, email, password, nickName } = req.body
@@ -37,11 +88,48 @@ const registerUser = async (req, res) => {
 }
 
 /**
- * @desc Authenticates a user with email and password and returns a JWT token.
- * @param {object} req - The HTTP request object.
- * @param {object} res - The HTTP response object.
- * @returns {Promise<object>} The authenticated user object and JWT token.
- * @route POST /api/v1/login
+ * @swagger
+ * /api/v1/login:
+ *   post:
+ *     summary: Authenticate a user with email and password and return a JWT token.
+ *     tags:
+ *       - Authentication
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: The user's email address.
+ *               password:
+ *                 type: string
+ *                 description: The user's password.
+ *     responses:
+ *       200:
+ *         description: A user object and a JWT token.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *                 token:
+ *                   type: string
+ *                   description: A JWT token.
+ *       400:
+ *         description: The provided email or password is invalid.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   description: An error message.
  */
 const loginUser = async (req, res) => {
   const { email, password } = req.body

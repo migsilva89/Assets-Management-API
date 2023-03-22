@@ -4,11 +4,47 @@ const fs = require('fs')
 //TODO url para aceder a imagem no FE: http://localhost:5000/images/my-image.jpg"
 
 /**
- * @desc Atualiza o avatar do usuário autenticado.
- * @param {object} req - The HTTP request object.
- * @param {object} res - The HTTP response object.
- * @returns {Promise<object>} The created user object.
- * @route GET /api/v1/user/avatar
+ * @swagger
+ * tags:
+ *   name: Avatar
+ *   description: API endpoints for managing user avatars.
+ */
+
+/**
+ * @swagger
+ * /api/v1/user/avatar:
+ *   put:
+ *     summary: Update the avatar of the authenticated user.
+ *     tags: [Avatar]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               avatar:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: The updated user object.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       404:
+ *         description: User not found.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: Usuário não encontrado
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
  */
 const updateAvatar = async (req, res) => {
   try {
@@ -43,8 +79,32 @@ const updateAvatar = async (req, res) => {
   }
 }
 
-
-// Exclui o avatar do usuário autenticado
+/**
+ * @swagger
+ * /api/v1/user/avatar:
+ *   delete:
+ *     summary: Delete the avatar of the authenticated user.
+ *     tags: [Avatar]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: The success message.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: Avatar excluído com sucesso
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       404:
+ *         description: User not found.
+ *         content:
+ *           application/json:
+ *             example:
+ *               msg: Usuário não encontrado
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 const deleteAvatar = async (req, res) => {
   try {
     const user = await User.findById(req.user.id)

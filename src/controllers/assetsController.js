@@ -1,9 +1,26 @@
 const Asset = require('../models/Asset')
 
 /**
- * @desc Get all assets
- * @route GET /api/v1/assets
- * @access Private
+ * @swagger
+ * /api/v1/assets:
+ *   get:
+ *     summary: Returns a list of all assets.
+ *     tags: [Assets]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: A list of assets.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Asset'
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
  */
 const getAllAssets = async (req, res) => {
   try {
@@ -15,9 +32,45 @@ const getAllAssets = async (req, res) => {
 }
 
 /**
- * @desc Get single asset
- * @route Get /api/v1/assets/:id
- * @access Private
+ * @swagger
+ * /api/v1/assets/{id}:
+ *   get:
+ *     summary: Get an asset by ID.
+ *     tags:
+ *       - Assets
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the asset to retrieve.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       201:
+ *         description: The requested asset.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates whether the request was successful.
+ *                 asset:
+ *                   $ref: '#/components/schemas/Asset'
+ *       400:
+ *         description: The provided asset ID is invalid.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates whether the request was successful.
+ *                 error:
+ *                   type: string
+ *                   description: An error message.
  */
 const getAsset = async (req, res) => {
   try {
@@ -29,9 +82,54 @@ const getAsset = async (req, res) => {
 }
 
 /**
- * @desc Add one asset
- * @route POST /api/v1/assets
- * @access Private
+ * @swagger
+ * /api/v1/assets:
+ *   post:
+ *     summary: Add a new asset.
+ *     tags:
+ *       - Assets
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: The name of the asset.
+ *               description:
+ *                 type: string
+ *                 description: A description of the asset.
+ *               tags:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: An array of tags to categorize the asset.
+ *     responses:
+ *       201:
+ *         description: The newly created asset.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Asset'
+ *       400:
+ *         description: An error occurred while creating the asset.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates whether the request was successful.
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   description: The error message.
+ *                   example: "Bad Request"
  */
 const addAsset = async (req, res, next) => {
   try {
@@ -51,9 +149,63 @@ const addAsset = async (req, res, next) => {
 }
 
 /**
- * @desc Update asset
- * @route POST /api/v1/assets:id
- * @access Private
+ * @swagger
+ * /api/v1/assets/{id}:
+ *   put:
+ *     summary: Update an existing asset by ID.
+ *     tags:
+ *       - Assets
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the asset to update.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: The updated name of the asset.
+ *               description:
+ *                 type: string
+ *                 description: The updated description of the asset.
+ *               tags:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: The updated tags of the asset.
+ *     responses:
+ *       200:
+ *         description: The updated asset object.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Whether the request was successful or not.
+ *                 data:
+ *                   $ref: '#/components/schemas/Asset'
+ *       400:
+ *         description: The provided asset ID is invalid or the request body is missing required fields.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Whether the request was successful or not.
+ *                 error:
+ *                   type: string
+ *                   description: An error message.
  */
 const updateAsset = async (req, res) => {
   try {
@@ -68,10 +220,45 @@ const updateAsset = async (req, res) => {
 }
 
 /**
- *
- * @desc Delete one asset
- * @route POST /api/v1/assets/:id
- * @access Private
+ * @swagger
+ * /api/v1/assets/{id}:
+ *   delete:
+ *     summary: Delete an asset by ID.
+ *     tags:
+ *       - Assets
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           description: The ID of the asset to delete.
+ *     responses:
+ *       201:
+ *         description: The deleted asset.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates if the request was successful.
+ *                 asset:
+ *                   $ref: '#/components/schemas/Asset'
+ *       400:
+ *         description: An error occurred while trying to delete the asset.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates if the request was successful.
+ *                 error:
+ *                   type: string
+ *                   description: An error message.
  */
 const deleteAsset = async (req, res) => {
   try {
