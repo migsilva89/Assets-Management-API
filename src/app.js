@@ -10,10 +10,43 @@ const cors = require('cors')
 const errorHandler = require('./middlewares/errorHandler')
 require('dotenv').config()
 const { Server } = require('socket.io')
-
+const swaggerJsdoc = require('swagger-jsdoc')
+const swaggerUi = require('swagger-ui-express')
 
 const app = express()
 const server = http.createServer(app)
+
+//SWAGGER OPTIONS
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'DevAssetsPro API',
+      version: '1.0.0',
+      description:
+        'This is a simple CRUD API application made with Express and documented with Swagger',
+      license: {
+        name: 'MIT',
+        url: 'https://spdx.org/licenses/MIT.html'
+      }
+    },
+    servers: [
+      {
+        url: 'http://localhost:5000'
+      }
+    ]
+  },
+  apis: ['./src/routes/**.js']
+}
+
+const specs = swaggerJsdoc(options)
+//SWAGGER CONNECTION
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(specs, { explorer: true })
+)
+
 
 // Dev logging middleware
 if (process.env.NODE_ENV === 'development') {
@@ -26,7 +59,7 @@ app.use(cors())
 
 // app.use(errorHandler)
 app.use('/api/v1/user', user)
-app.use('/api/v1/auth', auth) // Private routes below:
+// app.use('/api/v1/auth', auth) // Private routes below:
 app.use('/api/v1/assets', assets)
 
 app.get('/', (req, res) => {
