@@ -4,7 +4,8 @@
   "description": "DevAssetsPro App é uma plataforma de gerenciamento de ativos que permite aos usuários armazenar informações sobre os seus ativos.",
   "main": "src/app.js",
   "scripts": {
-    "start": "nodemon src/app.js"
+    "start": "nodemon src/app.js",
+    "seed:users": "node seeders/userAndAsset.js"
   },
   "author": "Miguel Silva",
   "license": "ISC",

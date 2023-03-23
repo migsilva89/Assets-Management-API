@@ -1,0 +1,92 @@
+[
+  {
+    "name": "Asset 1",
+    "description": "This is the description for asset 1.",
+    "owner": "6162cf80a5c86b9e5fe5a5a1",
+    "tags": [
+      "tag1",
+      "tag2"
+    ]
+  },
+  {
+    "name": "Asset 2",
+    "description": "This is the description for asset 2.",
+    "owner": "6162cf80a5c86b9e5fe5a5a2",
+    "tags": [
+      "tag3",
+      "tag4"
+    ]
+  },
+  {
+    "name": "Asset 3",
+    "description": "This is the description for asset 3.",
+    "owner": "6162cf80a5c86b9e5fe5a5a2",
+    "tags": [
+      "tag3",
+      "tag4"
+    ]
+  },
+  {
+    "name": "Asset 4",
+    "description": "This is the description for asset 4.",
+    "owner": "6162cf80a5c86b9e5fe5a5a3",
+    "tags": [
+      "tag5",
+      "tag6"
+    ]
+  },
+  {
+    "name": "Asset 5",
+    "description": "This is the description for asset 5.",
+    "owner": "6162cf80a5c86b9e5fe5a5a6",
+    "tags": [
+      "tag5",
+      "tag6"
+    ]
+  },
+  {
+    "name": "Asset 6",
+    "description": "This is the description for asset 6.",
+    "owner": "6162cf80a5c86b9e5fe5a5a8",
+    "tags": [
+      "tag5",
+      "tag6"
+    ]
+  },
+  {
+    "name": "Asset 7",
+    "description": "This is the description for asset 7.",
+    "owner": "6162cf80a5c86b9e5fe5a5aa",
+    "tags": [
+      "tag5",
+      "tag6"
+    ]
+  },
+  {
+    "name": "Asset 8",
+    "description": "This is the description for asset 8.",
+    "owner": "6162cf80a5c86b9e5fe5a5aa",
+    "tags": [
+      "tag5",
+      "tag6"
+    ]
+  },
+  {
+    "name": "Asset 9",
+    "description": "This is the description for asset 9.",
+    "owner": "6162cf80a5c86b9e5fe5a5a7",
+    "tags": [
+      "tag5",
+      "tag6"
+    ]
+  },
+  {
+    "name": "Asset 10",
+    "description": "This is the description for asset 10.",
+    "owner": "6162cf80a5c86b9e5fe5a5a7",
+    "tags": [
+      "tag5",
+      "tag6"
+    ]
+  }
+]

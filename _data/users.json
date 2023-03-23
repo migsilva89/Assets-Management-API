@@ -1,0 +1,72 @@
+[
+  {
+    "_id": "6162cf80a5c86b9e5fe5a5a1",
+    "name": "John Doe",
+    "nickName": "johndoe",
+    "email": "johndoe@example.com",
+    "password": "123456"
+  },
+  {
+    "_id": "6162cf80a5c86b9e5fe5a5a2",
+    "name": "Jane Doe",
+    "nickName": "janedoe",
+    "email": "janedoe@example.com",
+    "password": "123456"
+  },
+  {
+    "_id": "6162cf80a5c86b9e5fe5a5a3",
+    "name": "Mike Smith",
+    "nickName": "mikesmith",
+    "email": "mikesmith@example.com",
+    "password": "123456"
+  },
+  {
+    "_id": "6162cf80a5c86b9e5fe5a5a4",
+    "name": "Emily Johnson",
+    "nickName": "emilyjohnson",
+    "email": "emilyjohnson@example.com",
+    "password": "123456"
+  },
+  {
+    "_id": "6162cf80a5c86b9e5fe5a5a5",
+    "name": "David Brown",
+    "nickName": "davidbrown",
+    "email": "davidbrown@example.com",
+    "password": "123456"
+  },
+  {
+    "_id": "6162cf80a5c86b9e5fe5a5a6",
+    "name": "Ava Garcia",
+    "nickName": "avagarcia",
+    "email": "avagarcia@example.com",
+    "password": "123456"
+  },
+  {
+    "_id": "6162cf80a5c86b9e5fe5a5a7",
+    "name": "Michael Wilson",
+    "nickName": "michaelwilson",
+    "email": "michaelwilson@example.com",
+    "password": "123456"
+  },
+  {
+    "_id": "6162cf80a5c86b9e5fe5a5a8",
+    "name": "Olivia Davis",
+    "nickName": "oliviadavis",
+    "email": "oliviadavis@example.com",
+    "password": "123456"
+  },
+  {
+    "_id": "6162cf80a5c86b9e5fe5a5a9",
+    "name": "Matthew Martinez",
+    "nickName": "matthewmartinez",
+    "email": "matthewmartinez@example.com",
+    "password": "123456"
+  },
+  {
+    "_id": "6162cf80a5c86b9e5fe5a5aa",
+    "name": "Sophia Rodriguez",
+    "nickName": "sophiarodriguez",
+    "email": "sophiarodriguez@example.com",
+    "password": "123456"
+  }
+]

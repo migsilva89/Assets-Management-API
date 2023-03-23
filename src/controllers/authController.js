@@ -73,10 +73,10 @@ function generateToken(params){
  *         $ref: '#/components/responses/InternalServerError'
  */
 const registerUser = async (req, res) => {
-  const { name, email, password, nickName } = req.body
+  const { name, email, password, nickName, _id } = req.body
   
   try {
-    const user = await User.create({ name, email, password, nickName })
+    const user = await User.create({ name, email, password, nickName, _id })
     return res.send({
       user,
       token: generateToken(user.id)

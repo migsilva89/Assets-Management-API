@@ -59,7 +59,7 @@ app.use(cors())
 
 // app.use(errorHandler)
 app.use('/api/v1/user', user)
-// app.use('/api/v1/auth', auth) // Private routes below:
+app.use('/api/v1/auth', auth) // Private routes below:
 app.use('/api/v1/assets', assets)
 
 app.get('/', (req, res) => {
@@ -76,16 +76,16 @@ const io = new Server(server, {
 })
 
 //python3 -m http.server
-io.on('connection', (socket) => {
-  console.log('a user connected: ', socket.id)
-  
-  socket.on('send_message', (data) => {
-    socket.broadcast.emit('receive_message', data)
-  })
-  // socket.on('disconnect', () => {
-  //   console.log('user disconnected')
-  // })
-})
+// io.on('connection', (socket) => {
+//   console.log('a user connected: ', socket.id)
+//
+//   socket.on('send_message', (data) => {
+//     socket.broadcast.emit('receive_message', data)
+//   })
+//   // socket.on('disconnect', () => {
+//   //   console.log('user disconnected')
+//   // })
+// })
 
 server.listen(process.env.PORT, async () => {
   try {
