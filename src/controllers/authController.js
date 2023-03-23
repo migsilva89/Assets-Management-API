@@ -151,7 +151,18 @@ const loginUser = async (req, res) => {
   })
 }
 
+const getAuthenticatedUser = async (req, res) => {
+  const { id } = req.user
+  try {
+    const user = await User.findById(id)
+    res.send(user)
+  } catch (error) {
+    res.status(500).send(error.message)
+  }
+}
+
 module.exports = {
   registerUser,
-  loginUser
+  loginUser,
+  getAuthenticatedUser
 }
