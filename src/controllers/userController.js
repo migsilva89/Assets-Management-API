@@ -38,7 +38,7 @@ const blacklist = require('../utils/blacklist')
  *         $ref: '#/components/responses/InternalServerError'
  */
 const getUser = async (req, res) => {
-  const { id } = req.user
+  const { id } = req.params
   try {
     const user = await User.findById(id)
     res.send(user)

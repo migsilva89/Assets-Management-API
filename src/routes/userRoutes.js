@@ -6,10 +6,10 @@ const { updateAvatar, deleteAvatar } = require('../controllers/imageController')
 const upload = require('../middlewares/multerConfig')
 
 router.use(auth) // Protege todas as rotas abaixo deste middleware
-router.get('/', getUser)
+router.get('/:id', getUser)
 router.put('/', updateUser)
 router.delete('/', deleteUser)
-router.get('/all', getAllUsers)
+router.get('/', getAllUsers)
 router.put('/avatar', upload.single('avatar'), updateAvatar)
 router.delete('/avatar', deleteAvatar)
 

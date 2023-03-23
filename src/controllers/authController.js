@@ -89,7 +89,7 @@ const registerUser = async (req, res) => {
 
 /**
  * @swagger
- * /api/v1/login:
+ * /api/v1/auth/login:
  *   post:
  *     summary: Authenticate a user with email and password and return a JWT token.
  *     tags:
@@ -116,7 +116,7 @@ const registerUser = async (req, res) => {
  *               type: object
  *               properties:
  *                 user:
- *                   $ref: '#/components/schemas/User'
+ *                   name: object
  *                 token:
  *                   type: string
  *                   description: A JWT token.
