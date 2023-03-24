@@ -138,8 +138,8 @@ const addAsset = async (req, res, next) => {
       return res.status(400).json({ success: false, error: 'no user found' })
     }
     
-    const { name, description, tags } = req.body
-    const asset = await Asset.create({ name, description, owner, tags })
+    const { name, description } = req.body
+    const asset = await Asset.create({ name, description, owner })
     res.status(201).json(asset)
     
   } catch (error) {
