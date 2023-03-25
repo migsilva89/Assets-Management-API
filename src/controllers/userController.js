@@ -1,6 +1,7 @@
 const User = require('../models/User')
 const blacklist = require('../utils/blacklist')
 const fs = require('fs')
+const Asset = require('../models/Asset')
 
 /**
  * @swagger
@@ -146,6 +147,7 @@ const updateUser = async (req, res) => {
       { _id: req.user.id },
       {
         name: req.body.name,
+        nickName: req.body.nickName,
         email: req.body.email,
         password: req.body.password,
         avatar: filename
@@ -197,6 +199,11 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     const user = req.user
+    // Find the default owner
+    const defaultOwner = await User.findOne({ email: 'deleteduser@example.com' })
+    
+    // Update the owner ID of all assets posted by the deleted user to the ID of the default owner
+    await Asset.updateMany({ owner: user._id }, { owner: defaultOwner._id })
     
     // Remove the user from the database
     await User.findByIdAndDelete(user._id)
@@ -212,5 +219,8 @@ const deleteUser = async (req, res) => {
   }
 }
 
+const followUser = async (req, res) => {
+  res.send('follow user')
+}
 
 module.exports = { getUser, updateUser, getAllUsers, deleteUser }
