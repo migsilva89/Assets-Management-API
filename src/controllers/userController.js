@@ -1,5 +1,6 @@
 const User = require('../models/User')
 const blacklist = require('../utils/blacklist')
+const fs = require('fs')
 
 /**
  * @swagger
@@ -114,13 +115,51 @@ const getAllUsers = async (req, res) => {
  */
 const updateUser = async (req, res) => {
   const { id } = req.user
+  console.log(req.body.email)
   try {
-    const user = await User.findByIdAndUpdate(id, req.body)
-    res.send(user)
+    const user = await User.findById(id)
+    
+    if (!user) {
+      return res.status(404).json({ msg: 'Usuário não encontrado' })
+    }
+    
+    // Verifica se o avatar atual é diferente de "no-photo.jpg"
+    if (user.avatar !== 'no-photo.jpg') {
+      const filePath = `images/usersAvatar/${user.avatar}`
+      
+      // Verifica se o arquivo existe antes de excluí-lo
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath)
+      }
+    }
+    
+    // Atualiza o avatar do usuário se a imagem foi enviada
+    if (req.file) {
+      const { filename } = req.file
+      user.avatar = filename
+    }
+    
+    // Atualiza os dados do usuário
+    // Atualiza o avatar do usuário
+    const { filename } = req.file
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: req.user.id },
+      {
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password,
+        avatar: filename
+      },
+      { new: true }
+    )
+    
+    res.json(updatedUser)
   } catch (error) {
-    res.status(500).send(error.message)
+    console.error(error.message)
+    res.status(500).send('Erro do servidor')
   }
 }
+
 
 /**
  * @swagger

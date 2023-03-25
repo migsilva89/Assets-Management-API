@@ -7,10 +7,10 @@ const upload = require('../middlewares/multerConfig')
 
 router.use(auth) // Protege todas as rotas abaixo deste middleware
 router.get('/:id', getUser)
-router.put('/', updateUser)
+router.put('/', upload.single('avatar'), updateUser)
 router.delete('/', deleteUser)
 router.get('/', getAllUsers)
-router.put('/avatar', upload.single('avatar'), updateAvatar)
+// router.put('/avatar', upload.single('avatar'), updateAvatar)
 router.delete('/avatar', deleteAvatar)
 
 
