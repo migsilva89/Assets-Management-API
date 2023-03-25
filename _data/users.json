@@ -68,5 +68,11 @@
     "nickName": "sophiarodriguez",
     "email": "sophiarodriguez@example.com",
     "password": "123456"
+  },
+  {
+    "name": "Posts from deleted users",
+    "nickName": "DevAssets",
+    "email": "deleteduser@example.com",
+    "password": "123456"
   }
 ]

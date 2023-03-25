@@ -388,6 +388,27 @@ const removeLike = async (req, res) => {
   }
 }
 
+const getAllTags = async (req, res) => {
+  try {
+    const tags = await Asset.distinct('tags')
+    res.json(tags)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Erro ao obter as tags.' })
+  }
+}
+
+const getAssetsByTag = async (req, res) => {
+  const tag = req.params.tag
+  try {
+    const assets = await Asset.find({ tags: tag })
+    res.json(assets)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Erro ao obter os assets por tag.' })
+  }
+}
+
 
 module.exports = {
   getAllAssets,
@@ -398,5 +419,7 @@ module.exports = {
   addComment,
   removeComment,
   addLike,
-  removeLike
+  removeLike,
+  getAllTags,
+  getAssetsByTag
 }

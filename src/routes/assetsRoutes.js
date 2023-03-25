@@ -9,11 +9,16 @@ const {
   addComment,
   removeComment,
   addLike,
-  removeLike
+  removeLike,
+  getAllTags,
+  getAssetsByTag
 } = require('../controllers/assetsController')
 const auth = require('../middlewares/auth')
 
 router.use(auth) // Protege todas as rotas abaixo deste middleware
+
+router.get('/tags', getAllTags)
+router.get('/tags/:tag', getAssetsByTag)
 
 router.get('/', getAllAssets)
 router.get('/:id', getAsset)
