@@ -223,4 +223,5 @@ const followUser = async (req, res) => {
   res.send('follow user')
 }
 
+
 module.exports = { getUser, updateUser, getAllUsers, deleteUser }

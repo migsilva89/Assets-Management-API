@@ -409,6 +409,15 @@ const getAssetsByTag = async (req, res) => {
   }
 }
 
+const getAssetsByUser = async (req, res) => {
+  try {
+    const assets = await Asset.find({ owner: req.params.id })
+    res.send(assets)
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao obter os assets por user.' })
+  }
+}
+
 
 module.exports = {
   getAllAssets,
@@ -421,5 +430,6 @@ module.exports = {
   addLike,
   removeLike,
   getAllTags,
-  getAssetsByTag
+  getAssetsByTag,
+  getAssetsByUser
 }
