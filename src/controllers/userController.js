@@ -117,7 +117,7 @@ const getAllUsers = async (req, res) => {
  */
 const updateUser = async (req, res) => {
   const { id } = req.user
-  console.log(req.body.email)
+  // console.log(req.body.email)
   try {
     const user = await User.findById(id)
     
@@ -144,13 +144,14 @@ const updateUser = async (req, res) => {
     // Atualiza os dados do usuário
     // Atualiza o avatar do usuário
     const { filename } = req.file
+    console.log(req.body.password)
     const updatedUser = await User.findOneAndUpdate(
       { _id: req.user.id },
       {
         name: req.body.name,
         nickName: req.body.nickName,
         email: req.body.email,
-        // password: req.body.password,
+        password: req.body.password,
         avatar: filename
       },
       { new: true }

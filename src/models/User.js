@@ -52,6 +52,12 @@ UserSchema.pre('save', async function(next){
   next()
 })
 
+UserSchema.pre('findOneAndUpdate', async function(next){
+  const salt = await bcrypt.genSalt(10)
+  this._update.password = await bcrypt.hash(this._update.password, salt)
+  next()
+})
+
 // Sign JWT and return
 UserSchema.methods.getSignedJwtToken = function(){
   return jwt.sign({ id: this._id }, process.env.JWT_ACCESS_TOKEN, {
@@ -61,7 +67,9 @@ UserSchema.methods.getSignedJwtToken = function(){
 
 // Match user entered password to hashed password in database
 UserSchema.methods.matchPassword = async function(enteredPassword){
+  console.log(enteredPassword)
   return await bcrypt.compare(enteredPassword, this.password)
+  // return enteredPassword === this.password
 }
 
 module.exports = mongoose.model('User', UserSchema)
