@@ -10,6 +10,7 @@ const Asset = require('../models/Asset')
  *   description: API endpoints for managing users.
  */
 
+
 /**
  * @swagger
  *
@@ -19,6 +20,8 @@ const Asset = require('../models/Asset')
  *     description: Returns the user object of the authenticated user.
  *     tags:
  *       - User
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: header
  *         name: Authorization
@@ -49,6 +52,7 @@ const getUser = async (req, res) => {
   }
 }
 
+
 /**
  * @swagger
  *
@@ -58,6 +62,16 @@ const getUser = async (req, res) => {
  *     description: Returns an array of user objects for all users.
  *     tags:
  *       - User
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: header
+ *         name: Authorization
+ *         required: true
+ *         description: An authorization token for the user.
+ *         schema:
+ *           type: string
+ *           format: bearerToken
  *     responses:
  *       '200':
  *         description: OK. Returns an array of user objects.
@@ -79,6 +93,7 @@ const getAllUsers = async (req, res) => {
   }
 }
 
+
 /**
  * @swagger
  *
@@ -88,6 +103,8 @@ const getAllUsers = async (req, res) => {
  *     description: Updates the authenticated user using the data provided in the request body.
  *     tags:
  *       - User
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: header
  *         name: Authorization
@@ -149,7 +166,7 @@ const updateUser = async (req, res) => {
         name: req.body.name,
         nickName: req.body.nickName,
         email: req.body.email,
-        password: req.body.password,
+        // password: req.body.password,
         avatar: filename
       },
       { new: true }
@@ -172,6 +189,8 @@ const updateUser = async (req, res) => {
  *     description: Deletes the authenticated user and invalidates their access token.
  *     tags:
  *       - User
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: header
  *         name: Authorization
@@ -217,10 +236,6 @@ const deleteUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: 'Server error' })
   }
-}
-
-const followUser = async (req, res) => {
-  res.send('follow user')
 }
 
 

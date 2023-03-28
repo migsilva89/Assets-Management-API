@@ -34,10 +34,102 @@ const options = {
       {
         url: 'http://localhost:5000'
       }
-    ]
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT'
+        }
+      },
+      schemas: {
+        User: {
+          type: 'object',
+          properties: {
+            name: {
+              type: 'string'
+            },
+            nickName: {
+              type: 'string'
+            },
+            email: {
+              type: 'string',
+              format: 'email'
+            },
+            password: {
+              type: 'string'
+            }
+          }
+        },
+        Asset: {
+          type: 'object',
+          properties: {
+            name: {
+              type: 'string'
+            },
+            description: {
+              type: 'string'
+            }
+          }
+        }
+      },
+      responses: {
+        UnauthorizedError: {
+          description: 'Unauthorized',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  error: {
+                    type: 'string',
+                    description: 'Error message'
+                  }
+                }
+              }
+            }
+          }
+        },
+        InternalServerError: {
+          description: 'Internal Server Error',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  error: {
+                    type: 'string',
+                    description: 'Error message'
+                  }
+                }
+              }
+            }
+          }
+        },
+        BadRequestError: {
+          description: 'Bad Request Error',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  error: {
+                    type: 'string',
+                    description: 'Error message'
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    
   },
   apis: ['./src/routes/**.js', './src/controllers/**.js']
 }
+
 
 const specs = swaggerJsdoc(options)
 //SWAGGER CONNECTION

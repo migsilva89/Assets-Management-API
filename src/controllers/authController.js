@@ -23,7 +23,7 @@ function generateToken(params){
 /**
  * @swagger
  *
- * /api/v1/register:
+ * /api/v1/auth/register:
  *   post:
  *     summary: Registers a new user and returns the created user object and a token.
  *     description: Registers a new user and returns the created user object and a token for authentication.
@@ -73,10 +73,10 @@ function generateToken(params){
  *         $ref: '#/components/responses/InternalServerError'
  */
 const registerUser = async (req, res) => {
-  const { name, email, password, nickName, _id } = req.body
-  
+  const { name, email, password, nickName } = req.body
+  //Add _id to seed
   try {
-    const user = await User.create({ name, email, password, nickName, _id })
+    const user = await User.create({ name, email, password, nickName })
     return res.send({
       user,
       token: generateToken(user.id)

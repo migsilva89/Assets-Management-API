@@ -2,24 +2,35 @@ const Asset = require('../models/Asset')
 
 /**
  * @swagger
+ *
  * /api/v1/assets:
  *   get:
  *     summary: Returns a list of all assets.
- *     tags: [Assets]
+ *     description: Returns a list of all assets. Requires a valid authorization token.
+ *     tags:
+ *       - Assets
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: header
+ *         name: Authorization
+ *         required: true
+ *         description: An authorization token for the user.
+ *         schema:
+ *           type: string
+ *           format: bearerToken
  *     responses:
- *       200:
- *         description: A list of assets.
+ *       '200':
+ *         description: OK. Returns an array of asset objects.
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Asset'
- *       401:
+ *       '401':
  *         $ref: '#/components/responses/UnauthorizedError'
- *       500:
+ *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
 const getAllAssets = async (req, res) => {
