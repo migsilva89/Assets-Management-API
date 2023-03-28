@@ -70,6 +70,30 @@ const options = {
             },
             description: {
               type: 'string'
+            },
+            image: {
+              type: 'string'
+            },
+            owner: {
+              type: 'string'
+            },
+            tags: {
+              type: 'array',
+              items: {
+                type: 'string'
+              }
+            },
+            likes: {
+              type: 'array',
+              items: {
+                type: 'string'
+              }
+            },
+            comments: {
+              type: 'array',
+              items: {
+                type: 'string'
+              }
             }
           }
         }

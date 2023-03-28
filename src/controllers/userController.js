@@ -14,22 +14,21 @@ const Asset = require('../models/Asset')
 /**
  * @swagger
  *
- * /api/v1/user:
+ * /api/v1/user/{id}:
  *   get:
- *     summary: Returns the authenticated user.
- *     description: Returns the user object of the authenticated user.
+ *     summary: Returns the user with the specified ID.
+ *     description: Returns the user object of the user with the specified ID.
  *     tags:
  *       - User
- *     security:
- *       - bearerAuth: []
  *     parameters:
- *       - in: header
- *         name: Authorization
+ *       - in: path
+ *         name: id
  *         required: true
- *         description: An authorization token for the user.
+ *         description: The ID of the user to retrieve.
  *         schema:
  *           type: string
- *           format: bearerToken
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       '200':
  *         description: OK. Returns the user object.
@@ -64,14 +63,6 @@ const getUser = async (req, res) => {
  *       - User
  *     security:
  *       - bearerAuth: []
- *     parameters:
- *       - in: header
- *         name: Authorization
- *         required: true
- *         description: An authorization token for the user.
- *         schema:
- *           type: string
- *           format: bearerToken
  *     responses:
  *       '200':
  *         description: OK. Returns an array of user objects.
@@ -106,13 +97,6 @@ const getAllUsers = async (req, res) => {
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - in: header
- *         name: Authorization
- *         required: true
- *         description: An authorization token for the user.
- *         schema:
- *           type: string
- *           format: bearerToken
  *       - in: body
  *         name: User
  *         description: The user object to update.
@@ -191,14 +175,6 @@ const updateUser = async (req, res) => {
  *       - User
  *     security:
  *       - bearerAuth: []
- *     parameters:
- *       - in: header
- *         name: Authorization
- *         required: true
- *         description: An authorization token for the user.
- *         schema:
- *           type: string
- *           format: bearerToken
  *     responses:
  *       '200':
  *         description: OK. Returns a message indicating that the user has been deleted and instructing them to log out.

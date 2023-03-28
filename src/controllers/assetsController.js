@@ -2,6 +2,14 @@ const Asset = require('../models/Asset')
 
 /**
  * @swagger
+ * tags:
+ *   name: Assets
+ *   description: API endpoints for managing assets.
+ */
+
+
+/**
+ * @swagger
  *
  * /api/v1/assets:
  *   get:
@@ -11,14 +19,6 @@ const Asset = require('../models/Asset')
  *       - Assets
  *     security:
  *       - bearerAuth: []
- *     parameters:
- *       - in: header
- *         name: Authorization
- *         required: true
- *         description: An authorization token for the user.
- *         schema:
- *           type: string
- *           format: bearerToken
  *     responses:
  *       '200':
  *         description: OK. Returns an array of asset objects.
@@ -42,6 +42,7 @@ const getAllAssets = async (req, res) => {
   }
 }
 
+
 /**
  * @swagger
  * /api/v1/assets/{id}:
@@ -49,6 +50,8 @@ const getAllAssets = async (req, res) => {
  *     summary: Get an asset by ID.
  *     tags:
  *       - Assets
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -91,6 +94,7 @@ const getAsset = async (req, res) => {
     res.status(400).json({ success: false, error: error.message })
   }
 }
+
 
 /**
  * @swagger
@@ -159,6 +163,7 @@ const addAsset = async (req, res, next) => {
   }
 }
 
+
 /**
  * @swagger
  * /api/v1/assets/{id}:
@@ -166,6 +171,8 @@ const addAsset = async (req, res, next) => {
  *     summary: Update an existing asset by ID.
  *     tags:
  *       - Assets
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -230,6 +237,7 @@ const updateAsset = async (req, res) => {
   }
 }
 
+
 /**
  * @swagger
  * /api/v1/assets/{id}:
@@ -237,6 +245,8 @@ const updateAsset = async (req, res) => {
  *     summary: Delete an asset by ID.
  *     tags:
  *       - Assets
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -280,10 +290,72 @@ const deleteAsset = async (req, res) => {
   }
 }
 
+
 /**
- * @desc Add comment to asset
- * @route POST /api/v1/assets/:id/comments
- * @access Private
+ * @swagger
+ * /api/v1/assets/{id}/comments:
+ *   post:
+ *     summary: Add comment to asset
+ *     tags:
+ *       - Assets
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the asset to add a comment to.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               text:
+ *                 type: string
+ *                 description: The text of the comment.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '201':
+ *         description: The asset object with the newly added comment.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Whether the request was successful or not.
+ *                 data:
+ *                   $ref: '#/components/schemas/Asset'
+ *       '400':
+ *         description: The request body is missing required fields.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Whether the request was successful or not.
+ *                 error:
+ *                   type: string
+ *                   description: An error message.
+ *       '404':
+ *         description: The provided asset ID is invalid.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Whether the request was successful or not.
+ *                 error:
+ *                   type: string
+ *                   description: An error message.
  */
 const addComment = async (req, res) => {
   try {
@@ -310,10 +382,68 @@ const addComment = async (req, res) => {
   }
 }
 
+
 /**
- * @desc Remove comment from an asset
- * @route DELETE /api/v1/assets/:id/comments/:commentId
- * @access Private
+ * @swagger
+ * /api/v1/assets/{id}/comments/{commentId}:
+ *   delete:
+ *     summary: Remove a comment from an asset.
+ *     tags:
+ *       - Assets
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the asset that contains the comment to remove.
+ *       - in: path
+ *         name: commentId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the comment to remove.
+ *     responses:
+ *       200:
+ *         description: The updated asset object.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Whether the request was successful or not.
+ *                 data:
+ *                   $ref: '#/components/schemas/Asset'
+ *       401:
+ *         description: The user is not authorized to delete this comment.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Whether the request was successful or not.
+ *                 error:
+ *                   type: string
+ *                   description: An error message.
+ *       404:
+ *         description: The provided asset ID or comment ID is invalid, or the comment does not exist on the asset.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Whether the request was successful or not.
+ *                 error:
+ *                   type: string
+ *                   description: An error message.
  */
 const removeComment = async (req, res) => {
   try {
@@ -344,10 +474,59 @@ const removeComment = async (req, res) => {
   }
 }
 
+
 /**
- * @desc Add like to asset
- * @route POST /api/v1/assets/:id/likes
- * @access Private
+ * @swagger
+ * /api/v1/assets/{id}/likes:
+ *   post:
+ *     summary: Add like to an asset.
+ *     tags:
+ *       - Assets
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the asset to add a like to.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userId:
+ *                 type: string
+ *                 description: The ID of the user who liked the asset.
+ *     responses:
+ *       200:
+ *         description: The updated asset object.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Whether the request was successful or not.
+ *                 data:
+ *                   $ref: '#/components/schemas/Asset'
+ *       400:
+ *         description: The provided asset ID is invalid, the user has already liked the asset, or the request body is missing required fields.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Whether the request was successful or not.
+ *                 error:
+ *                   type: string
+ *                   description: An error message.
  */
 const addLike = async (req, res) => {
   try {
@@ -370,10 +549,39 @@ const addLike = async (req, res) => {
   }
 }
 
+
 /**
- * @desc Remove like from asset
- * @route DELETE /api/v1/assets/:id/likes
- * @access Private
+ * @swagger
+ * /api/v1/assets/{id}/likes:
+ *   delete:
+ *     summary: Remove like from asset
+ *     description: Remove a user's like from an asset
+ *     tags: [Assets]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the asset to remove like from
+ *         schema:
+ *           type: string
+ *           format: ObjectId
+ *       - in: header
+ *         name: Authorization
+ *         required: true
+ *         description: Bearer token with JWT
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Like removed successfully
+ *       '400':
+ *         description: User has not liked this asset
+ *       '404':
+ *         description: Asset not found
+ *       '500':
+ *         description: Server error
  */
 const removeLike = async (req, res) => {
   try {
@@ -399,6 +607,36 @@ const removeLike = async (req, res) => {
   }
 }
 
+
+/**
+ * @swagger
+ * /api/v1/assets/tags:
+ *   get:
+ *     summary: Get all asset tags
+ *     description: Retrieve a list of all unique tags used by assets
+ *     tags: [Assets]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: A list of unique asset tags
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: string
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Error message
+ */
 const getAllTags = async (req, res) => {
   try {
     const tags = await Asset.distinct('tags')
@@ -409,6 +647,54 @@ const getAllTags = async (req, res) => {
   }
 }
 
+
+/**
+ * @swagger
+ * /api/v1/assets/tag/{tag}:
+ *   get:
+ *     summary: Get assets by tag
+ *     description: Retrieve a list of assets with a specified tag
+ *     tags: [Assets]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: tag
+ *         required: true
+ *         description: Tag to search for assets by
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         description: Page number of results (default = 1)
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         description: Number of results per page (default = 10)
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 10
+ *     responses:
+ *       '200':
+ *         description: A list of assets with the specified tag
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AssetList'
+ *       '400':
+ *         description: Invalid tag or page/limit value
+ *       '404':
+ *         description: No assets found with the specified tag
+ *       '500':
+ *         description: Server error
+ */
 const getAssetsByTag = async (req, res) => {
   const tag = req.params.tag
   try {
@@ -420,6 +706,36 @@ const getAssetsByTag = async (req, res) => {
   }
 }
 
+
+/**
+ * @swagger
+ * /api/v1/assets/user/{id}:
+ *   get:
+ *     summary: Get assets by user ID
+ *     description: Get all assets created by a specific user
+ *     tags: [Assets]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the user whose assets to retrieve
+ *         schema:
+ *           type: string
+ *           format: ObjectId
+ *     responses:
+ *       '200':
+ *         description: List of assets
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Asset'
+ *       '500':
+ *         description: Server error
+ */
 const getAssetsByUser = async (req, res) => {
   try {
     const assets = await Asset.find({ owner: req.params.id })
