@@ -33,12 +33,12 @@ const Asset = require('../models/Asset')
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-const getAllAssets = async (req, res) => {
+const getAllAssets = async (req, res, next) => {
   try {
     const assets = await Asset.find({})
     res.status(200).json(assets)
   } catch (error) {
-    res.status(400).json({ success: false, error: error.message })
+    next(error.message)
   }
 }
 
@@ -86,12 +86,12 @@ const getAllAssets = async (req, res) => {
  *                   type: string
  *                   description: An error message.
  */
-const getAsset = async (req, res) => {
+const getAsset = async (req, res, next) => {
   try {
     const asset = await Asset.findById(req.params.id)
     res.status(201).json({ success: true, asset })
   } catch (error) {
-    res.status(400).json({ success: false, error: error.message })
+    next(error.message)
   }
 }
 
@@ -158,8 +158,7 @@ const addAsset = async (req, res, next) => {
     res.status(201).json(asset)
     
   } catch (error) {
-    res.status(400).json({ success: false, error: error.message })
-    // next(error)
+    next(error.message)
   }
 }
 
@@ -225,7 +224,7 @@ const addAsset = async (req, res, next) => {
  *                   type: string
  *                   description: An error message.
  */
-const updateAsset = async (req, res) => {
+const updateAsset = async (req, res, next) => {
   try {
     const asset = await Asset.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -233,7 +232,7 @@ const updateAsset = async (req, res) => {
     })
     res.status(200).json({ success: true, data: asset })
   } catch (error) {
-    res.status(400).json({ success: false, error: error.message })
+    next(error.message)
   }
 }
 
@@ -281,12 +280,12 @@ const updateAsset = async (req, res) => {
  *                   type: string
  *                   description: An error message.
  */
-const deleteAsset = async (req, res) => {
+const deleteAsset = async (req, res, next) => {
   try {
     const asset = await Asset.findByIdAndDelete(req.params.id)
     res.status(201).json({ success: true, asset })
   } catch (error) {
-    res.status(400).json({ success: false, error: error.message })
+    next(error.message)
   }
 }
 
@@ -357,7 +356,7 @@ const deleteAsset = async (req, res) => {
  *                   type: string
  *                   description: An error message.
  */
-const addComment = async (req, res) => {
+const addComment = async (req, res, next) => {
   try {
     const asset = await Asset.findById(req.params.id)
     if (!asset) {
@@ -378,7 +377,7 @@ const addComment = async (req, res) => {
     res.status(201).json({ success: true, data: asset })
     
   } catch (error) {
-    res.status(400).json({ success: false, error: error.message })
+    next(error.message)
   }
 }
 
@@ -445,7 +444,7 @@ const addComment = async (req, res) => {
  *                   type: string
  *                   description: An error message.
  */
-const removeComment = async (req, res) => {
+const removeComment = async (req, res, next) => {
   try {
     const asset = await Asset.findById(req.params.id)
     if (!asset) {
@@ -470,7 +469,7 @@ const removeComment = async (req, res) => {
     res.status(200).json({ success: true, data: asset })
     
   } catch (error) {
-    res.status(400).json({ success: false, error: error.message })
+    next(error.message)
   }
 }
 
@@ -528,7 +527,7 @@ const removeComment = async (req, res) => {
  *                   type: string
  *                   description: An error message.
  */
-const addLike = async (req, res) => {
+const addLike = async (req, res, next) => {
   try {
     const asset = await Asset.findById(req.params.id)
     if (!asset) {
@@ -545,7 +544,7 @@ const addLike = async (req, res) => {
     res.status(200).json({ success: true, data: asset })
     
   } catch (error) {
-    res.status(400).json({ success: false, error: error.message })
+    next(error.message)
   }
 }
 
@@ -583,7 +582,7 @@ const addLike = async (req, res) => {
  *       '500':
  *         description: Server error
  */
-const removeLike = async (req, res) => {
+const removeLike = async (req, res, next) => {
   try {
     const assetId = req.params.id
     const asset = await Asset.findById(assetId)
@@ -602,8 +601,7 @@ const removeLike = async (req, res) => {
     
     res.status(200).send('Like removed successfully')
   } catch (error) {
-    console.error(error)
-    res.status(500).send('Server error')
+    next(error.message)
   }
 }
 
@@ -637,13 +635,12 @@ const removeLike = async (req, res) => {
  *                   type: string
  *                   description: Error message
  */
-const getAllTags = async (req, res) => {
+const getAllTags = async (req, res, next) => {
   try {
     const tags = await Asset.distinct('tags')
     res.json(tags)
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ message: 'Erro ao obter as tags.' })
+    next(error.message)
   }
 }
 
@@ -695,14 +692,14 @@ const getAllTags = async (req, res) => {
  *       '500':
  *         description: Server error
  */
-const getAssetsByTag = async (req, res) => {
+const getAssetsByTag = async (req, res, next) => {
   const tag = req.params.tag
   try {
     const assets = await Asset.find({ tags: tag })
     res.json(assets)
   } catch (error) {
     console.error(error)
-    res.status(500).json({ message: 'Erro ao obter os assets por tag.' })
+    next(error.message)
   }
 }
 
@@ -736,12 +733,12 @@ const getAssetsByTag = async (req, res) => {
  *       '500':
  *         description: Server error
  */
-const getAssetsByUser = async (req, res) => {
+const getAssetsByUser = async (req, res, next) => {
   try {
     const assets = await Asset.find({ owner: req.params.id })
     res.send(assets)
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao obter os assets por user.' })
+    next(error.message)
   }
 }
 

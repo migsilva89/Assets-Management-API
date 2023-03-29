@@ -41,13 +41,15 @@ const Asset = require('../models/Asset')
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-const getUser = async (req, res) => {
+const getUser = async (req, res, next) => {
   const { id } = req.params
   try {
     const user = await User.findById(id)
+    if (!user)
+      return res.status(404).send('Usuario nao encontrado')
     res.send(user)
   } catch (error) {
-    res.status(500).send(error.message)
+    next(error.message)
   }
 }
 
@@ -75,12 +77,12 @@ const getUser = async (req, res) => {
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-const getAllUsers = async (req, res) => {
+const getAllUsers = async (req, res, next) => {
   try {
     const users = await User.find({})
     res.send(users)
   } catch (error) {
-    res.status(500).send(error.message)
+    next(error.message)
   }
 }
 
@@ -115,9 +117,8 @@ const getAllUsers = async (req, res) => {
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-const updateUser = async (req, res) => {
+const updateUser = async (req, res, next) => {
   const { id } = req.user
-  // console.log(req.body.email)
   try {
     const user = await User.findById(id)
     
@@ -141,26 +142,46 @@ const updateUser = async (req, res) => {
       user.avatar = filename
     }
     
+    // Basic validations for email, password, name, and nickname
+    const { name, email, password, nickName } = req.body
+    
+    if (!name) {
+      return res.status(400).json({ error: 'Name is required' })
+    }
+    
+    if (!nickName) {
+      return res.status(400).json({ error: 'Nickname is required' })
+    }
+    
+    const emailRegex = /\S+@\S+\.\S+/
+    if (!email) {
+      return res.status(400).json({ error: 'Email is required' })
+    } else if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: 'Email is not valid' })
+    }
+    
+    if (!password) {
+      return res.status(400).json({ error: 'Password is required' })
+    } else if (password.length < 8) {
+      return res.status(400).json({ error: 'Password should be at least 8 characters long' })
+    }
+    
     // Atualiza os dados do usuário
-    // Atualiza o avatar do usuário
-    const { filename } = req.file
-    console.log(req.body.password)
     const updatedUser = await User.findOneAndUpdate(
       { _id: req.user.id },
       {
-        name: req.body.name,
-        nickName: req.body.nickName,
-        email: req.body.email,
-        password: req.body.password,
-        avatar: filename
+        name,
+        nickName,
+        email,
+        password,
+        avatar: req.file ? req.file.filename : user.avatar
       },
       { new: true }
     )
     
     res.json(updatedUser)
   } catch (error) {
-    console.error(error.message)
-    res.status(500).send('Erro do servidor')
+    next(error.message)
   }
 }
 
@@ -192,7 +213,7 @@ const updateUser = async (req, res) => {
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-const deleteUser = async (req, res) => {
+const deleteUser = async (req, res, next) => {
   try {
     const user = req.user
     // Find the default owner
@@ -211,7 +232,7 @@ const deleteUser = async (req, res) => {
     // Send a response indicating that the user has been deleted and instructing them to log out
     res.status(200).json({ message: 'User deleted. Please log out.' })
   } catch (error) {
-    res.status(500).json({ error: 'Server error' })
+    next(error.message)
   }
 }
 

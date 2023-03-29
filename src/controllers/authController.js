@@ -72,7 +72,7 @@ function generateToken(params){
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-const registerUser = async (req, res) => {
+const registerUser = async (req, res, next) => {
   const { name, email, password, nickName } = req.body
   //Add _id to seed
   try {
@@ -82,8 +82,8 @@ const registerUser = async (req, res) => {
       token: generateToken(user.id)
     })
     
-  } catch (err) {
-    return res.status(400).send({ error: 'Registration failed!' })
+  } catch (error) {
+    next(error.message)
   }
 }
 
@@ -151,13 +151,13 @@ const loginUser = async (req, res) => {
   })
 }
 
-const getAuthenticatedUser = async (req, res) => {
+const getAuthenticatedUser = async (req, res, next) => {
   const { id } = req.user
   try {
     const user = await User.findById(id)
     res.send(user)
   } catch (error) {
-    res.status(500).send(error.message)
+    next(error.message)
   }
 }
 

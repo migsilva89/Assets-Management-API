@@ -5,7 +5,7 @@ const { getUser, updateUser, getAllUsers, deleteUser } = require('../controllers
 const upload = require('../middlewares/multerConfig')
 const { getAssetsByUser } = require('../controllers/assetsController')
 
-router.use(auth) // Protege todas as rotas abaixo deste middleware
+router.use(auth) // Protege todas as rotas abaixo
 router.get('/:id', getUser)
 router.put('/', upload.single('avatar'), updateUser)
 router.delete('/', deleteUser)

@@ -154,7 +154,6 @@ const options = {
   apis: ['./src/routes/**.js', './src/controllers/**.js']
 }
 
-
 const specs = swaggerJsdoc(options)
 //SWAGGER CONNECTION
 app.use(
@@ -173,7 +172,7 @@ app.use('/images', express.static('images'))
 app.use(express.json())
 app.use(cors())
 
-// app.use(errorHandler)
+app.use(errorHandler)
 app.use('/api/v1/users', user)
 app.use('/api/v1/auth', auth) // Private routes below:
 app.use('/api/v1/assets', assets)
