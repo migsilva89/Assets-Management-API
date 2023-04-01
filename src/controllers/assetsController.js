@@ -140,14 +140,22 @@ const getAsset = asyncHandler(async (req, res, next) => {
  *                   example: "Bad Request"
  */
 const addAsset = asyncHandler(async (req, res) => {
-  const owner = req.user._id
-  if (!owner) {
-    return res.status(400).json({ success: false, error: 'no user found' })
-  }
-  
   const { name, description, tags } = req.body
-  const asset = await Asset.create({ name, description, owner, tags })
-  res.status(201).json(asset)
+  const owner = req.user._id
+  
+  // Remove empty tags
+  const tagsArray = tags.filter(tag => tag.trim())
+  
+  const asset = new Asset({
+    name,
+    description,
+    tags: tagsArray,
+    owner
+  })
+  
+  const createdAsset = await asset.save()
+  
+  res.status(201).json(createdAsset)
 })
 
 
