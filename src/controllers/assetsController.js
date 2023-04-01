@@ -145,8 +145,8 @@ const addAsset = asyncHandler(async (req, res) => {
     return res.status(400).json({ success: false, error: 'no user found' })
   }
   
-  const { name, description } = req.body
-  const asset = await Asset.create({ name, description, owner })
+  const { name, description, tags } = req.body
+  const asset = await Asset.create({ name, description, owner, tags })
   res.status(201).json(asset)
 })
 
@@ -213,10 +213,16 @@ const addAsset = asyncHandler(async (req, res) => {
  *                   description: An error message.
  */
 const updateAsset = asyncHandler(async (req, res) => {
-  const asset = await Asset.findByIdAndUpdate(req.params.id, req.body, {
+  const asset = await Asset.findByIdAndUpdate(req.params.id, {
+    name: req.body.name,
+    description: req.body.description,
+    owner: req.body.owner,
+    tags: req.body.tags
+  }, {
     new: true,
     runValidators: true
   })
+  
   res.status(200).json({ success: true, data: asset })
 })
 

@@ -1,9 +1,18 @@
 # Assets Management API
 
-Assets Management API is a platform for managing assets such as images and text. It allows users to store information
-about their assets, including categories, comments, and likes. The platform offers categorization and tagging features.
-The API is built using Node.js and Express.js, and uses MongoDB as the database. It includes authentication and
-authorization using JWT (JSON Web Tokens), and validation using express-validator.
+Assets Management API is a comprehensive platform designed to efficiently manage digital assets like images and text.
+The application empowers users to effortlessly store information related to their assets, including categorization,
+comments, and likes. The platform also offers advanced categorization and tagging features, making it easy to quickly
+locate assets based on specific search criteria.
+Built using Node.js and Express.js, the API leverages the power of MongoDB, an industry-leading NoSQL database, to
+provide a scalable and flexible data storage solution. The platform includes robust authentication and authorization
+capabilities, thanks to the use of JSON Web Tokens (JWTs). Additionally, the use of express-validator ensures that all
+user inputs are validated to prevent potential security vulnerabilities.
+Furthermore, the platform offers a chat feature, enabling users to communicate with each other in real-time. This
+feature provides a seamless collaboration experience, ensuring that users can easily and quickly interact with each
+other to accomplish their goals.
+Overall, Assets Management API offers a powerful and reliable solution for managing digital assets, providing users with
+a comprehensive platform that offers advanced features to make managing their assets easier and more efficient.
 
 ## Acknowledgments
 
@@ -11,31 +20,24 @@ This project was developed as part of the final project for the Full-Stack Web D
 like to thank Fernando for providing guidance and support throughout the course. I would also like to thank my
 classmates for their feedback and suggestions during the development of this project.
 
+As part of this project, I have also developed a front-end
+application, [Assets Management Website](https://github.com/migsilva89/Assets-Management-website) that interacts with
+the API, allowing users to
+see the API in action and test its functionality.
+
+You can check it out here: [Assets Management Website](https://github.com/migsilva89/Assets-Management-website).
+
 ## Tech Stack
 
 - Node.js: for server-side JavaScript
 - Express.js: for building the API
 - MongoDB: for the database
 - Mongoose: for modeling data in MongoDB
-
-### Dependencies
-
-- bcryptjs: for password hashing
-- body-parser: for parsing incoming request bodies
-- colors: for colorful console logs
-- cors: for enabling cross-origin resource sharing
-- dotenv: for loading environment variables from a .env file
-- express: for building the API
-- express-validator: for request validation
-- jsonwebtoken: for generating and verifying JWTs
-- mongoose: for connecting to MongoDB
-- morgan: for HTTP request logging
-- multer: for handling file uploads
-- nodemon: for automatic server restarts during development
-- slugify: for converting text to URL-friendly slugs
-- socket.io: for real-time communication
-- swagger-jsdoc: for generating Swagger documentation from JSDoc comments
-- swagger-ui-express: for displaying Swagger documentation in the API
+- Multer: for handling file uploads
+- Jsonwebtoken: for generating and verifying JWTs
+- Socket.io: for real-time communication
+- Morgan: for HTTP request logging
+- Swagger: for generating Swagger documentation from JSDoc comments, and displaying documentation in the API.
 
 ## Development
 
@@ -43,7 +45,7 @@ classmates for their feedback and suggestions during the development of this pro
 
 **Prerequisites:**
 
-- Node.js and yarn installed on your machine
+- Node.js installed on your machine
 - MongoDB database collection created
 
 1. Clone the repository
@@ -97,13 +99,6 @@ The API documentation is available at http://localhost:5000/api-docs when the se
 - You can also view the API documentation by clicking on the "Model" or "Schema" tabs. These tabs provide information on
   the data structures used by the API.
 
-## Deployment
-
-To deploy the API to a production environment, you can use a cloud-based service such as AWS, Heroku, or DigitalOcean.
-These services typically provide a platform for running Node.js applications, along with a variety of tools for managing
-deployments, scaling, and monitoring. You can also use a containerization tool like Docker to package your application
-and its dependencies into a single image that can be deployed to any platform that supports Docker.
-
-Tips or advice on how to improve are very welcome, thank you all!
+### Tips or advice on how to improve are very welcome, thank you all!
 
 [Linkedin](https://www.linkedin.com/in/miguelmpsilva/) 
