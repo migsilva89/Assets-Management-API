@@ -1,4 +1,5 @@
 const Asset = require('../models/Asset')
+const asyncHandler = require('../middlewares/asyncHandler')
 
 /**
  * @swagger
@@ -33,14 +34,10 @@ const Asset = require('../models/Asset')
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-const getAllAssets = async (req, res, next) => {
-  try {
-    const assets = await Asset.find({})
-    res.status(200).json(assets)
-  } catch (error) {
-    next(error.message)
-  }
-}
+const getAllAssets = asyncHandler(async (req, res) => {
+  const assets = await Asset.find({})
+  res.status(200).json(assets)
+})
 
 
 /**
@@ -86,14 +83,10 @@ const getAllAssets = async (req, res, next) => {
  *                   type: string
  *                   description: An error message.
  */
-const getAsset = async (req, res, next) => {
-  try {
-    const asset = await Asset.findById(req.params.id)
-    res.status(201).json({ success: true, asset })
-  } catch (error) {
-    next(error.message)
-  }
-}
+const getAsset = asyncHandler(async (req, res, next) => {
+  const asset = await Asset.findById(req.params.id)
+  res.status(201).json({ success: true, asset })
+})
 
 
 /**
@@ -146,21 +139,16 @@ const getAsset = async (req, res, next) => {
  *                   description: The error message.
  *                   example: "Bad Request"
  */
-const addAsset = async (req, res, next) => {
-  try {
-    const owner = req.user._id
-    if (!owner) {
-      return res.status(400).json({ success: false, error: 'no user found' })
-    }
-    
-    const { name, description } = req.body
-    const asset = await Asset.create({ name, description, owner })
-    res.status(201).json(asset)
-    
-  } catch (error) {
-    next(error.message)
+const addAsset = asyncHandler(async (req, res) => {
+  const owner = req.user._id
+  if (!owner) {
+    return res.status(400).json({ success: false, error: 'no user found' })
   }
-}
+  
+  const { name, description } = req.body
+  const asset = await Asset.create({ name, description, owner })
+  res.status(201).json(asset)
+})
 
 
 /**
@@ -224,17 +212,13 @@ const addAsset = async (req, res, next) => {
  *                   type: string
  *                   description: An error message.
  */
-const updateAsset = async (req, res, next) => {
-  try {
-    const asset = await Asset.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true
-    })
-    res.status(200).json({ success: true, data: asset })
-  } catch (error) {
-    next(error.message)
-  }
-}
+const updateAsset = asyncHandler(async (req, res) => {
+  const asset = await Asset.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true
+  })
+  res.status(200).json({ success: true, data: asset })
+})
 
 
 /**
@@ -280,14 +264,10 @@ const updateAsset = async (req, res, next) => {
  *                   type: string
  *                   description: An error message.
  */
-const deleteAsset = async (req, res, next) => {
-  try {
-    const asset = await Asset.findByIdAndDelete(req.params.id)
-    res.status(201).json({ success: true, asset })
-  } catch (error) {
-    next(error.message)
-  }
-}
+const deleteAsset = asyncHandler(async (req, res, next) => {
+  const asset = await Asset.findByIdAndDelete(req.params.id)
+  res.status(201).json({ success: true, asset })
+})
 
 
 /**
@@ -356,30 +336,30 @@ const deleteAsset = async (req, res, next) => {
  *                   type: string
  *                   description: An error message.
  */
-const addComment = async (req, res, next) => {
-  try {
-    const asset = await Asset.findById(req.params.id)
-    if (!asset) {
-      return res.status(404).json({ success: false, error: 'Asset not found' })
-    }
-    
-    const { text } = req.body
-    const author = req.user._id
-    const assetId = { text, author }
-    const newComment = {
-      text: req.body.text,
-      author: req.user._id,
-      asset: req.params.id
-    }
-    
-    asset.comments.unshift(newComment)
-    await asset.save()
-    res.status(201).json({ success: true, data: asset })
-    
-  } catch (error) {
-    next(error.message)
+const addComment = asyncHandler(async (req, res) => {
+  const asset = await Asset.findById(req.params.id)
+  
+  if (!asset) {
+    return res.status(404).json({ success: false, error: 'Asset not found' })
   }
-}
+  
+  // Extract the comment text and author ID from the request body
+  const { text } = req.body
+  const author = req.user._id
+  
+  // Create a new comment object with text, author, and asset ID
+  const newComment = {
+    text: req.body.text,
+    author: req.user._id,
+    asset: req.params.id
+  }
+  
+  // Add the new comment to the beginning of the asset's comments array
+  asset.comments.unshift(newComment)
+  
+  await asset.save()
+  res.status(201).json({ success: true, data: asset })
+})
 
 
 /**
@@ -444,34 +424,32 @@ const addComment = async (req, res, next) => {
  *                   type: string
  *                   description: An error message.
  */
-const removeComment = async (req, res, next) => {
-  try {
-    const asset = await Asset.findById(req.params.id)
-    if (!asset) {
-      return res.status(404).json({ success: false, error: 'Asset not found' })
-    }
-    
-    const commentId = req.params.commentId
-    const comment = asset.comments.find(comment => comment._id.toString() === commentId.toString())
-    
-    if (!comment) {
-      return res.status(404).json({ success: false, error: 'Comment not found' })
-    }
-    
-    if (comment.author.toString() !== req.user._id.toString()) {
-      return res.status(401).json({ success: false, error: 'Not authorized to delete this comment' })
-    }
-    
-    const removeIndex = asset.comments.findIndex(comment => comment._id.toString() === commentId.toString())
-    asset.comments.splice(removeIndex, 1)
-    await asset.save()
-    
-    res.status(200).json({ success: true, data: asset })
-    
-  } catch (error) {
-    next(error.message)
+const removeComment = asyncHandler(async (req, res, next) => {
+  const asset = await Asset.findById(req.params.id)
+  
+  if (!asset) {
+    return res.status(404).json({ success: false, error: 'Asset not found' })
   }
-}
+  
+  const commentId = req.params.commentId
+  const comment = asset.comments.find(comment => comment._id.toString() === commentId.toString())
+  
+  if (!comment) {
+    return res.status(404).json({ success: false, error: 'Comment not found' })
+  }
+  
+  // Check if the current user is the author of the comment
+  if (comment.author.toString() !== req.user._id.toString()) {
+    return res.status(401).json({ success: false, error: 'Not authorized to delete this comment' })
+  }
+  
+  // Remove the comment from the asset's comments array
+  const removeIndex = asset.comments.findIndex(comment => comment._id.toString() === commentId.toString())
+  asset.comments.splice(removeIndex, 1)
+  
+  await asset.save()
+  res.status(200).json({ success: true, data: asset })
+})
 
 
 /**
@@ -527,26 +505,26 @@ const removeComment = async (req, res, next) => {
  *                   type: string
  *                   description: An error message.
  */
-const addLike = async (req, res, next) => {
-  try {
-    const asset = await Asset.findById(req.params.id)
-    if (!asset) {
-      return res.status(404).json({ success: false, error: 'Asset not found' })
-    }
-    
-    const userId = req.user._id
-    if (asset.likes.includes(userId)) {
-      return res.status(400).json({ success: false, error: 'User has already liked this asset' })
-    }
-    
-    asset.likes.push(userId)
-    await asset.save()
-    res.status(200).json({ success: true, data: asset })
-    
-  } catch (error) {
-    next(error.message)
+const addLike = asyncHandler(async (req, res, next) => {
+  const assetId = req.params.id
+  const asset = await Asset.findById(assetId)
+  
+  if (!asset) {
+    return res.status(404).json({ success: false, error: 'Asset not found' })
   }
-}
+  
+  // Check if the user has already liked the asset
+  const userId = req.user._id
+  if (asset.likes.includes(userId)) {
+    return res.status(400).json({ success: false, error: 'User has already liked this asset' })
+  }
+  
+  // Add user's ID to the likes array
+  asset.likes.push(userId)
+  await asset.save()
+  
+  res.status(200).json({ success: true, data: asset })
+})
 
 
 /**
@@ -582,28 +560,26 @@ const addLike = async (req, res, next) => {
  *       '500':
  *         description: Server error
  */
-const removeLike = async (req, res, next) => {
-  try {
-    const assetId = req.params.id
-    const asset = await Asset.findById(assetId)
-    
-    if (!asset) {
-      return res.status(404).send('Asset not found')
-    }
-    
-    const likeIndex = asset.likes.indexOf(req.user.id)
-    if (likeIndex === -1) {
-      return res.status(400).send('You have not liked this asset')
-    }
-    
-    asset.likes.splice(likeIndex, 1)
-    await asset.save()
-    
-    res.status(200).send('Like removed successfully')
-  } catch (error) {
-    next(error.message)
+const removeLike = asyncHandler(async (req, res, next) => {
+  const assetId = req.params.id
+  const asset = await Asset.findById(assetId)
+  
+  if (!asset) {
+    return res.status(404).send('Asset not found')
   }
-}
+  
+  // Check if the user has liked this asset
+  const likeIndex = asset.likes.indexOf(req.user.id)
+  if (likeIndex === -1) {
+    return res.status(400).send('You have not liked this asset')
+  }
+  
+  // Remove the like and save the asset
+  asset.likes.splice(likeIndex, 1)
+  await asset.save()
+  
+  res.status(200).send('Like removed successfully')
+})
 
 
 /**
@@ -635,19 +611,15 @@ const removeLike = async (req, res, next) => {
  *                   type: string
  *                   description: Error message
  */
-const getAllTags = async (req, res, next) => {
-  try {
-    const tags = await Asset.distinct('tags')
-    res.json(tags)
-  } catch (error) {
-    next(error.message)
-  }
-}
+const getAllTags = asyncHandler(async (req, res) => {
+  const tags = await Asset.distinct('tags')
+  res.json(tags)
+})
 
 
 /**
  * @swagger
- * /api/v1/assets/tag/{tag}:
+ * /api/v1/assets/tags/{tag}:
  *   get:
  *     summary: Get assets by tag
  *     description: Retrieve a list of assets with a specified tag
@@ -661,23 +633,6 @@ const getAllTags = async (req, res, next) => {
  *         description: Tag to search for assets by
  *         schema:
  *           type: string
- *       - in: query
- *         name: page
- *         required: false
- *         description: Page number of results (default = 1)
- *         schema:
- *           type: integer
- *           minimum: 1
- *           default: 1
- *       - in: query
- *         name: limit
- *         required: false
- *         description: Number of results per page (default = 10)
- *         schema:
- *           type: integer
- *           minimum: 1
- *           maximum: 100
- *           default: 10
  *     responses:
  *       '200':
  *         description: A list of assets with the specified tag
@@ -692,21 +647,16 @@ const getAllTags = async (req, res, next) => {
  *       '500':
  *         description: Server error
  */
-const getAssetsByTag = async (req, res, next) => {
+const getAssetsByTag = asyncHandler(async (req, res, next) => {
   const tag = req.params.tag
-  try {
-    const assets = await Asset.find({ tags: tag })
-    res.json(assets)
-  } catch (error) {
-    console.error(error)
-    next(error.message)
-  }
-}
+  const assets = await Asset.find({ tags: tag })
+  res.json(assets)
+})
 
 
 /**
  * @swagger
- * /api/v1/assets/user/{id}:
+ * /api/v1/users/{id}/assets:
  *   get:
  *     summary: Get assets by user ID
  *     description: Get all assets created by a specific user
@@ -733,14 +683,11 @@ const getAssetsByTag = async (req, res, next) => {
  *       '500':
  *         description: Server error
  */
-const getAssetsByUser = async (req, res, next) => {
-  try {
-    const assets = await Asset.find({ owner: req.params.id })
-    res.send(assets)
-  } catch (error) {
-    next(error.message)
-  }
-}
+const getAssetsByUser = asyncHandler(async (req, res, next) => {
+  // Get all assets owned by a user
+  const assets = await Asset.find({ owner: req.params.id })
+  res.send(assets)
+})
 
 
 module.exports = {

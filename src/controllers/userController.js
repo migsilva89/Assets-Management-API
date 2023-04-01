@@ -2,6 +2,9 @@ const User = require('../models/User')
 const blacklist = require('../utils/blacklist')
 const fs = require('fs')
 const Asset = require('../models/Asset')
+const asyncHandler = require('../middlewares/asyncHandler')
+const ErrorResponse = require('../utils/errorResponse')
+
 
 /**
  * @swagger
@@ -41,17 +44,15 @@ const Asset = require('../models/Asset')
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-const getUser = async (req, res, next) => {
+const getUser = asyncHandler(async (req, res, next) => {
   const { id } = req.params
-  try {
-    const user = await User.findById(id)
-    if (!user)
-      return res.status(404).send('Usuario nao encontrado')
-    res.send(user)
-  } catch (error) {
-    next(error.message)
+  const user = await User.findById(id)
+  
+  if (!user) {
+    return res.status(404).send('User not found')
   }
-}
+  res.send(user)
+})
 
 
 /**
@@ -77,14 +78,10 @@ const getUser = async (req, res, next) => {
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-const getAllUsers = async (req, res, next) => {
-  try {
-    const users = await User.find({})
-    res.send(users)
-  } catch (error) {
-    next(error.message)
-  }
-}
+const getAllUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({})
+  res.send(users)
+})
 
 
 /**
@@ -117,73 +114,83 @@ const getAllUsers = async (req, res, next) => {
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-const updateUser = async (req, res, next) => {
+const updateUser = asyncHandler(async (req, res, next) => {
   const { id } = req.user
-  try {
-    const user = await User.findById(id)
-    
-    if (!user) {
-      return res.status(404).json({ msg: 'Usuário não encontrado' })
-    }
-    
-    // Verifica se o avatar atual é diferente de "no-photo.jpg"
-    if (user.avatar !== 'no-photo.jpg') {
-      const filePath = `images/usersAvatar/${user.avatar}`
-      
-      // Verifica se o arquivo existe antes de excluí-lo
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath)
-      }
-    }
-    
-    // Atualiza o avatar do usuário se a imagem foi enviada
-    if (req.file) {
-      const { filename } = req.file
-      user.avatar = filename
-    }
-    
-    // Basic validations for email, password, name, and nickname
-    const { name, email, password, nickName } = req.body
-    
-    if (!name) {
-      return res.status(400).json({ error: 'Name is required' })
-    }
-    
-    if (!nickName) {
-      return res.status(400).json({ error: 'Nickname is required' })
-    }
-    
-    const emailRegex = /\S+@\S+\.\S+/
-    if (!email) {
-      return res.status(400).json({ error: 'Email is required' })
-    } else if (!emailRegex.test(email)) {
-      return res.status(400).json({ error: 'Email is not valid' })
-    }
-    
-    if (!password) {
-      return res.status(400).json({ error: 'Password is required' })
-    } else if (password.length < 8) {
-      return res.status(400).json({ error: 'Password should be at least 8 characters long' })
-    }
-    
-    // Atualiza os dados do usuário
-    const updatedUser = await User.findOneAndUpdate(
-      { _id: req.user.id },
-      {
-        name,
-        nickName,
-        email,
-        password,
-        avatar: req.file ? req.file.filename : user.avatar
-      },
-      { new: true }
-    )
-    
-    res.json(updatedUser)
-  } catch (error) {
-    next(error.message)
+  
+  const user = await User.findById(id)
+  
+  if (!user) {
+    return res.status(404).json({ msg: 'User not found' })
   }
-}
+  
+  // Check if the current avatar is different from "no-photo.jpg"
+  if (user.avatar !== 'no-photo.jpg') {
+    const filePath = `images/usersAvatar/${user.avatar}`
+    
+    // Check if the file exists before deleting it
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath)
+    }
+  }
+  
+  // Update user avatar if image is sent
+  if (req.file) {
+    const { filename } = req.file
+    user.avatar = filename
+  }
+  
+  // Basic validations for email, password, name, and nickname
+  const { name, email, password, nickName } = req.body
+  
+  if (!name) {
+    return res.status(400).json({ error: 'Name is required' })
+  }
+  
+  if (!nickName) {
+    return res.status(400).json({ error: 'Nickname is required' })
+  }
+  
+  // Check if the email already exists in the database
+  const emailRegex = /\S+@\S+\.\S+/
+  if (!email) {
+    return res.status(400).json({ error: 'Email is required' })
+  } else if (!emailRegex.test(email)) {
+    return res.status(400).json({ error: 'Email is not valid' })
+  } else {
+    const existingUser = await User.findOne({ email: email })
+    if (existingUser && existingUser.id !== id) {
+      return res.status(400).json({ error: 'Email is already in use' })
+    }
+  }
+  
+  // Check if the nickName already exists in the database
+  const existingNickNameUser = await User.findOne({ nickName })
+  if (existingNickNameUser && existingNickNameUser.id !== id) {
+    return next(new ErrorResponse('Nickname is already in use'), 400)
+  }
+  
+  if (!password) {
+    return res.status(400).json({ error: 'Password is required' })
+  } else if (password.length < 8) {
+    return next(new ErrorResponse('Password should be at least 8 characters long batatas'), 400)
+    // return res.status(400).json({ error: 'Password should be at least 8 characters long' })
+  }
+  
+  // Update user data
+  const updatedUser = await User.findOneAndUpdate(
+    { _id: req.user.id },
+    {
+      name,
+      nickName,
+      email,
+      password,
+      avatar: req.file ? req.file.filename : user.avatar
+    },
+    { new: true }
+  )
+  
+  res.json(updatedUser)
+})
 
 
 /**
@@ -213,28 +220,25 @@ const updateUser = async (req, res, next) => {
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-const deleteUser = async (req, res, next) => {
-  try {
-    const user = req.user
-    // Find the default owner
-    const defaultOwner = await User.findOne({ email: 'deleteduser@example.com' })
-    
-    // Update the owner ID of all assets posted by the deleted user to the ID of the default owner
-    await Asset.updateMany({ owner: user._id }, { owner: defaultOwner._id })
-    
-    // Remove the user from the database
-    await User.findByIdAndDelete(user._id)
-    
-    // Invalidate the user's access token by adding it to the blacklist
-    const token = req.token
-    blacklist.addToken(token)
-    
-    // Send a response indicating that the user has been deleted and instructing them to log out
-    res.status(200).json({ message: 'User deleted. Please log out.' })
-  } catch (error) {
-    next(error.message)
-  }
-}
+const deleteUser = asyncHandler(async (req, res, next) => {
+  const user = req.user
+  
+  // Find the default owner
+  const defaultOwner = await User.findOne({ email: 'deleteduser@example.com' })
+  
+  // Update the owner ID of all assets posted by the deleted user to the ID of the default owner
+  await Asset.updateMany({ owner: user._id }, { owner: defaultOwner._id })
+  
+  // Remove the user from the database
+  await User.findByIdAndDelete(user._id)
+  
+  // Invalidate the user's access token by adding it to the blacklist
+  const token = req.token
+  blacklist.addToken(token)
+  
+  // Send a response indicating that the user has been deleted and instructing them to log out
+  res.status(200).json({ message: 'User deleted. Please log out.' })
+})
 
 
 module.exports = { getUser, updateUser, getAllUsers, deleteUser }

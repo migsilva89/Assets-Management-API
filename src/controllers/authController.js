@@ -1,5 +1,6 @@
 const User = require('../models/User')
 const jwt = require('jsonwebtoken')
+const asyncHandler = require('../middlewares/asyncHandler')
 
 /**
  * @swagger
@@ -19,6 +20,7 @@ function generateToken(params){
     expiresIn: '1h'
   })
 }
+
 
 /**
  * @swagger
@@ -72,20 +74,50 @@ function generateToken(params){
  *       '500':
  *         $ref: '#/components/responses/InternalServerError'
  */
-const registerUser = async (req, res, next) => {
+const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, nickName } = req.body
   //Add _id to seed
-  try {
-    const user = await User.create({ name, email, password, nickName })
-    return res.send({
-      user,
-      token: generateToken(user.id)
-    })
-    
-  } catch (error) {
-    next(error.message)
+  
+  if (!name) {
+    return res.status(400).json({ error: 'Name is required' })
   }
-}
+  
+  if (!nickName) {
+    return res.status(400).json({ error: 'Nickname is required' })
+  }
+  
+  // Check if the email already exists in the database
+  const emailRegex = /\S+@\S+\.\S+/
+  if (!email) {
+    return res.status(400).json({ error: 'Email is required' })
+  } else if (!emailRegex.test(email)) {
+    return res.status(400).json({ error: 'Email is not valid' })
+  } else {
+    const existingUser = await User.findOne({ email: email })
+    if (existingUser) {
+      return res.status(400).json({ error: 'Email is already in use' })
+    }
+  }
+  
+  // Check if the nickName already exists in the database
+  const existingNickNameUser = await User.findOne({ nickName })
+  if (existingNickNameUser) {
+    return res.status(400).json({ error: 'Nickname is already in use' })
+  }
+  
+  if (!password) {
+    return res.status(400).json({ error: 'Password is required' })
+  } else if (password.length < 8) {
+    return res.status(400).json({ error: 'Password should be at least 8 characters long' })
+  }
+  
+  const user = await User.create({ name, email, password, nickName })
+  return res.send({
+    user,
+    token: generateToken(user.id)
+  })
+})
+
 
 /**
  * @swagger
@@ -131,7 +163,7 @@ const registerUser = async (req, res, next) => {
  *                   type: string
  *                   description: An error message.
  */
-const loginUser = async (req, res) => {
+const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body
   
   // Check for user
@@ -149,17 +181,14 @@ const loginUser = async (req, res) => {
     user,
     token: generateToken(user.id)
   })
-}
+})
 
-const getAuthenticatedUser = async (req, res, next) => {
+
+const getAuthenticatedUser = asyncHandler(async (req, res) => {
   const { id } = req.user
-  try {
-    const user = await User.findById(id)
-    res.send(user)
-  } catch (error) {
-    next(error.message)
-  }
-}
+  const user = await User.findById(id)
+  res.send(user)
+})
 
 module.exports = {
   registerUser,
