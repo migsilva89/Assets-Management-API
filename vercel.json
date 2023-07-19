@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "app.js",
+      "use": "@now/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/images/(.*)",
+      "headers": {
+        "cache-control": "max-age=31536000, immutable"
+      },
+      "continue": true
+    },
+    {
+      "src": "/api-docs/(.*)",
+      "dest": "app.js"
+    },
+    {
+      "src": "/api/v1/users/(.*)",
+      "dest": "app.js"
+    },
+    {
+      "src": "/api/v1/auth/(.*)",
+      "dest": "app.js"
+    },
+    {
+      "src": "/api/v1/assets/(.*)",
+      "dest": "app.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "app.js"
+    }
+  ]
+}
