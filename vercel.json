@@ -8,6 +8,18 @@
   ],
   "routes": [
     {
+      "src": "/api/v1/assets/(.*)",
+      "dest": "src/routes/assetsRoutes.js"
+    },
+    {
+      "src": "/api/v1/auth/(.*)",
+      "dest": "src/routes/authRoutes.js"
+    },
+    {
+      "src": "/api/v1/users/(.*)",
+      "dest": "src/routes/userRoutes.js"
+    },
+    {
       "src": "/images/(.*)",
       "headers": {
         "cache-control": "max-age=31536000, immutable"
@@ -16,18 +28,6 @@
     },
     {
       "src": "/api-docs/(.*)",
-      "dest": "app.js"
-    },
-    {
-      "src": "/api/v1/users/(.*)",
-      "dest": "app.js"
-    },
-    {
-      "src": "/api/v1/auth/(.*)",
-      "dest": "app.js"
-    },
-    {
-      "src": "/api/v1/assets/(.*)",
       "dest": "app.js"
     },
     {
