@@ -10,10 +10,7 @@ const User = require('../src/models/User')
 const Asset = require('../src/models/Asset')
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+mongoose.connect(process.env.MONGO_URL)
 
 // Read users.json and assets.json files
 const usersData = JSON.parse(
@@ -29,15 +26,15 @@ const seedData = async () => {
     // Delete existing users and assets
     await User.deleteMany()
     await Asset.deleteMany()
-    
+
     // Seed users
     await User.create(usersData)
     console.log('Users seeded successfully!')
-    
+
     // Seed assets
     await Asset.create(assetsData)
     console.log('Assets seeded successfully!')
-    
+
     process.exit()
   } catch (err) {
     console.error(err)
